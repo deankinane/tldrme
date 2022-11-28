@@ -6,17 +6,23 @@ interface Props {
 	resumeModel: ResumeModel
 }
 export default function EditorPage({ resumeModel }: Props) {
-	return <Editor resumeModel={resumeModel} />
+	return <Editor resume={resumeModel} />
 }
 
 export async function getServerSideProps() {
-	const resumeModel: ResumeModel = {
-		id: 'testresume',
-		headerTitle: 'Your Name Here',
-		headerSubtitle: 'Your Job Title Here',
-		profilePicUrl: '',
-		sections: [],
-	}
+	const resumeModel = await prisma?.resume.findUnique({
+		where: {
+			id: 'clb0mv3a20002ttog006ac639',
+		},
+		include: {
+			sections: {
+				include: {
+					elements: true,
+				},
+			},
+		},
+	})
+
 	return {
 		props: { resumeModel },
 	}

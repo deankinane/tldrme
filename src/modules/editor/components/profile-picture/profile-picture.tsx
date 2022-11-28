@@ -17,7 +17,10 @@ export default function ProfilePicture({ imageUrl }: Props) {
 					data-testid="profile-picture-image"
 				/>
 			) : (
-				<div data-testid="profile-picture-default">No pic</div>
+				<div
+					data-testid="profile-picture-default"
+					className="h-28 w-28 rounded-full bg-slate-400 lg:h-48 lg:w-48"
+				></div>
 			)}
 		</div>
 	)

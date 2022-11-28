@@ -18,10 +18,17 @@ export default function Section({
 }: Props) {
 	const [dragged, setDragged] = useState(false)
 
-	const dragStart = useCallback(() => {
-		setDragged(true)
-		onDragStart(index)
-	}, [index, onDragStart])
+	const dragStart = useCallback(
+		(ev: React.DragEvent<HTMLDivElement>) => {
+			ev.dataTransfer.setData(
+				'sourceColumn',
+				model.columnIndex.toString()
+			)
+			setDragged(true)
+			onDragStart(index)
+		},
+		[index, model.columnIndex, onDragStart]
+	)
 
 	const dragEnd = useCallback(() => {
 		setDragged(false)
@@ -39,7 +46,7 @@ export default function Section({
 		<div
 			className={`${dragged ? 'opacity-50' : ''}`}
 			draggable={true}
-			onDragStart={() => dragStart()}
+			onDragStart={dragStart}
 			onDragEnd={() => dragEnd()}
 		>
 			<SectionTitle text={model.title} onTextChanged={onTextChanged} />
