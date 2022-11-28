@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#__next {
+	height: 100%;
+	/* font-family: 'Roboto', sans-serif; */
+	font-family: 'segoe ui', arial, helvetica, sans-serif;
+	letter-spacing: 1px;
+}
+
+input {
+	letter-spacing: 1px;
+}
