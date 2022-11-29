@@ -1,16 +1,16 @@
-function Error({ statusCode }: { statusCode: string }) {
+function Error({ err }: { err: any }) {
 	return (
 		<p>
-			{statusCode
-				? `An error ${statusCode} occurred on server`
+			{err
+				? `An error occurred on server`
 				: 'An error occurred on client'}
+			{err}
 		</p>
 	)
 }
 
 Error.getInitialProps = ({ res, err }: { res: any; err: any }) => {
-	const statusCode = res ? res.statusCode : err ? err.statusCode : 404
-	return { statusCode }
+	return { err }
 }
 
 export default Error
