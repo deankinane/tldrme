@@ -4,7 +4,7 @@ import { editorRouter } from './editor'
 
 export const appRouter = router({
 	editor: editorRouter,
-	auth: authRouter,
+	// auth: authRouter,
 })
 
 // export type definition of API
