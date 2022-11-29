@@ -12,7 +12,7 @@ export default function EditorPage({ resumeModel }: Props) {
 export async function getServerSideProps() {
 	const resumeModel = await prisma?.resume.findUnique({
 		where: {
-			id: 'clb0mv3a20002ttog006ac639',
+			id: 'clb2oakir0000ttqkzncmmdqr',
 		},
 		include: {
 			sections: {
