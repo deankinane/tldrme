@@ -81,8 +81,6 @@ model Section {
   title String
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   elements Element[]
-
-  @@index([resumeId])
 }
 
 model Element {
@@ -93,8 +91,6 @@ model Element {
   text String
   icon String
   section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-
-  @@index([sectionId])
 }
 
 enum ElementType {
