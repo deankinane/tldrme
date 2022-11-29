@@ -1,16 +1,17 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import React from 'react'
 import SectionTitle from '@/modules/editor/components/section-title/section_title'
 import type { SectionModel, SubTitleModel } from '@/utils/common/types'
 import AddElementButton from '../add-element-button/add-element-button'
 import { v4 as uuidv4 } from 'uuid'
 import { trpc } from '@/utils/trpc'
+import SubTitleElement from '../elements/subtitle-element/subtitle-element'
 
 interface Props {
 	index: number
 	model: SectionModel
 	onModelUpdated: (model: SectionModel) => void
-	onDragStart: (index: number) => void
+	onDragStart: () => void
 	onDragEnd: () => void
 }
 
@@ -23,9 +24,25 @@ export default function Section({
 }: Props) {
 	const [dragged, setDragged] = useState(false)
 	const [model] = useState(pModel)
+	const newQueue = useRef<string[]>([])
 
 	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
+	const mAddSubTitle = trpc.editor.addSubTitleElement.useMutation({
+		onSuccess: (d) => {
+			if (!d) return
+			const mergeId =
+				newQueue.current.length > 0
+					? newQueue.current.splice(0, 1)[0]
+					: undefined
 
+			if (mergeId) {
+				model.elements.forEach(
+					(e) => (e.id = e.id === mergeId ? d.id : e.id)
+				)
+				onModelUpdated(model)
+			}
+		},
+	})
 	const dragStart = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
 			ev.dataTransfer.setData(
@@ -35,7 +52,7 @@ export default function Section({
 			ev.dataTransfer.setData('itemId', model.id)
 			ev.dataTransfer.setData('itemIndex', index.toString())
 			setDragged(true)
-			onDragStart(index)
+			onDragStart()
 		},
 		[index, model.columnIndex, model.id, onDragStart]
 	)
@@ -59,7 +76,7 @@ export default function Section({
 		[mUpdateSectionTitle, model, onModelUpdated]
 	)
 
-	const onAddElementClicked = useCallback(() => {
+	const addSubtitle = useCallback(() => {
 		const newEl: SubTitleModel = {
 			id: uuidv4(),
 			order: model.elements.length,
@@ -72,9 +89,19 @@ export default function Section({
 			},
 		}
 
+		newQueue.current.push(newEl.id)
+
 		model.elements.push(newEl)
 		onModelUpdated(model)
-	}, [model, onModelUpdated])
+		mAddSubTitle.mutate({
+			sectionId: model.id,
+			order: model.elements.length,
+		})
+	}, [mAddSubTitle, model, onModelUpdated])
+
+	const onAddElementClicked = useCallback(() => {
+		addSubtitle()
+	}, [addSubtitle])
 
 	return (
 		<div
@@ -85,8 +112,15 @@ export default function Section({
 		>
 			<SectionTitle text={model.title} onTextChanged={onTextChanged} />
 			{model.elements.map((e) => {
-				if (e.type === 'SubTitle') return <div>Subtitle</div>
-				if (e.type === 'IconText') return <div>IconText</div>
+				if (e.type === 'SubTitle')
+					return (
+						<SubTitleElement
+							key={e.id}
+							model={e as SubTitleModel}
+						/>
+					)
+				else if (e.type === 'IconText')
+					return <div key={e.id}>IconText</div>
 			})}
 			<AddElementButton onAddElementClicked={onAddElementClicked} />
 		</div>

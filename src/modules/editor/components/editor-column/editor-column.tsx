@@ -20,7 +20,7 @@ export default function EditorColumn({
 	sections: pSections,
 }: Props) {
 	const [sections, setSections] = useState(pSections)
-	// const [draggedItemIndex, setDraggedItemIndex] = useState(-1)
+
 	const [showTrashTarget, setShowTrashTarget] = useState(false)
 	const newQueue = useRef<string[]>([])
 
@@ -68,14 +68,14 @@ export default function EditorColumn({
 
 	const onUpdateSection = useCallback((s: SectionModel) => {
 		setSections((secs) => {
-			secs.splice(s.order, 1, { ...s })
+			const idx = secs.findIndex((x) => x.id === s.id)
+			secs.splice(idx, 1, { ...s })
 			return [...secs]
 		})
 		return
 	}, [])
 
-	const onDragStart = useCallback((index: number) => {
-		// setDraggedItemIndex(index)
+	const onDragStart = useCallback(() => {
 		setShowTrashTarget(true)
 	}, [])
 

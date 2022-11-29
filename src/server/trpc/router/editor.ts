@@ -93,4 +93,25 @@ export const editorRouter = router({
 				},
 			})
 		}),
+	addSubTitleElement: publicProcedure
+		.input(
+			z.object({
+				sectionId: z.string(),
+				order: z.number(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			return await prisma?.element.create({
+				data: {
+					sectionId: input.sectionId,
+					order: input.order,
+					type: 'SubTitle',
+					elementSubTitle: {
+						create: {
+							text: 'Subtitle',
+						},
+					},
+				},
+			})
+		}),
 })
