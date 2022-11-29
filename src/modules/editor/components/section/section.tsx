@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useContext, useRef, useState } from 'react'
 import React from 'react'
 import SectionTitle from '@/modules/editor/components/section-title/section_title'
 import type { SectionModel } from '@/utils/common/types'
@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { trpc } from '@/utils/trpc'
 import type { Element } from '@prisma/client'
 import BaseElement from '../elements/base-element'
+import { DraggableContext } from '../../utils/draggableContext'
 
 interface Props {
 	index: number
@@ -26,6 +27,7 @@ export default function Section({
 	const [dragged, setDragged] = useState(false)
 	const [model] = useState(pModel)
 	const newQueue = useRef<string[]>([])
+	const { dragData, setDragData } = useContext(DraggableContext)
 
 	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
 	const mAddElement = trpc.editor.addElement.useMutation({
@@ -46,16 +48,21 @@ export default function Section({
 	})
 	const dragStart = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
-			ev.dataTransfer.setData(
-				'sourceColumn',
-				model.columnIndex.toString()
-			)
-			ev.dataTransfer.setData('itemId', model.id)
-			ev.dataTransfer.setData('itemIndex', index.toString())
+			// ev.dataTransfer.setData(
+			// 	'sourceColumn',
+			// 	model.columnIndex.toString()
+			// )
+			// ev.dataTransfer.setData('itemId', model.id)
+			// ev.dataTransfer.setData('itemIndex', index.toString())
+			setDragData({
+				itemId: model.id,
+				columnIndex: model.columnIndex,
+				itemIndex: index,
+			})
 			setDragged(true)
 			onDragStart()
 		},
-		[index, model.columnIndex, model.id, onDragStart]
+		[index, model.columnIndex, model.id, onDragStart, setDragData]
 	)
 
 	const dragEnd = useCallback(() => {
@@ -120,6 +127,7 @@ export default function Section({
 				onDragStart={dragStart}
 				onDragEnd={dragEnd}
 			/>
+
 			{model.elements.map((e) => {
 				return (
 					<BaseElement

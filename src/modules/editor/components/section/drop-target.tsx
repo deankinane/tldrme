@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
+import { DraggableContext } from '../../utils/draggableContext'
 
 interface Props {
 	index: number
@@ -11,26 +12,27 @@ export default function DropTarget({
 	onItemDropped,
 }: Props) {
 	const [dragHover, setDragHover] = useState(false)
+	const { dragData, setDragData } = useContext(DraggableContext)
 
 	const validSource = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
-			const source = parseInt(ev.dataTransfer.getData('sourceColumn'))
-			const itemIndex = parseInt(ev.dataTransfer.getData('itemIndex'))
+			const source = dragData.columnIndex
+			const itemIndex = dragData.itemIndex
 			return (
 				source === columnIndex &&
 				(index < itemIndex || Math.abs(itemIndex - index) > 1)
 			)
 		},
-		[columnIndex, index]
+		[columnIndex, dragData.columnIndex, dragData.itemIndex, index]
 	)
 
 	const onDrop = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
 			ev.preventDefault()
-			onItemDropped(ev.dataTransfer.getData('itemId'), index)
+			onItemDropped(dragData.itemId, index)
 			setDragHover(false)
 		},
-		[index, onItemDropped]
+		[dragData.itemId, index, onItemDropped]
 	)
 
 	const onDragOver = useCallback(

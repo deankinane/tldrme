@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
+import { DraggableContext } from '../../utils/draggableContext'
 
 interface Props {
 	show: boolean
@@ -6,13 +7,14 @@ interface Props {
 }
 export default function TrashDropTarget({ show, onItemDropped }: Props) {
 	const [dragHover, setDragHover] = useState(false)
+	const { dragData, setDragData } = useContext(DraggableContext)
 
 	const onDrop = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
 			ev.preventDefault()
-			onItemDropped(ev.dataTransfer.getData('itemId'))
+			onItemDropped(dragData.itemId)
 		},
-		[onItemDropped]
+		[dragData.itemId, onItemDropped]
 	)
 
 	const onDragOver = useCallback((ev: React.DragEvent<HTMLDivElement>) => {

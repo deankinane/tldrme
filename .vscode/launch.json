@@ -8,7 +8,7 @@
 			"command": "npm run dev"
 		},
 		{
-			"name": "Next.js: debug client-side",
+			"name": "Next.js: debug client-side - firefox",
 			"type": "firefox",
 			"request": "launch",
 			"url": "http://localhost:3000",
@@ -18,6 +18,12 @@
 					"path": "${workspaceFolder}"
 				}
 			]
+		},
+		{
+			"name": "Next.js: debug client-side - chrome",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:3000"
 		},
 		{
 			"name": "Next.js: debug full stack",

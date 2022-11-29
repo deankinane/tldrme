@@ -1,4 +1,5 @@
 import Editor from '@/modules/editor/editor'
+import { DraggableProvider } from '@/modules/editor/utils/draggableContext'
 import type { ResumeModel } from '@/utils/common/types'
 import React from 'react'
 import { prisma } from 'src/server/db/client'
@@ -9,13 +10,14 @@ interface Props {
 export default function EditorPage({ resumeModel }: Props) {
 	return (
 		<div className="mx-auto h-full max-w-screen-xl">
-			<Editor resume={resumeModel} />
+			<DraggableProvider>
+				<Editor resume={resumeModel} />
+			</DraggableProvider>
 		</div>
 	)
 }
 
 export async function getServerSideProps() {
-	console.log('editor', 'getServerSideProps')
 	const resumeModel = await prisma?.resume.findUnique({
 		where: {
 			id: 'clb2tj0100000ttyopqsmvlu6',
@@ -28,8 +30,6 @@ export async function getServerSideProps() {
 			},
 		},
 	})
-
-	console.log('editor', 'resumeModel', resumeModel)
 
 	return {
 		props: { resumeModel },
