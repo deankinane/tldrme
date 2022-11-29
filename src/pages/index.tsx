@@ -5,7 +5,10 @@ import React from 'react'
 import { trpc } from '../utils/trpc'
 import Link from 'next/link'
 
-const Home: NextPage = () => {
+interface Props {
+	test: string
+}
+const Home: NextPage<Props> = ({ test }: Props) => {
 	return (
 		<>
 			<Head>
@@ -14,6 +17,7 @@ const Home: NextPage = () => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main className="m-auto h-full xl:max-w-7xl">
+				<p>{test}</p>
 				<Link href="/editor">Editor</Link>
 			</main>
 		</>
@@ -21,6 +25,15 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export async function getServerSideProps() {
+	console.log('home', 'getServerSideProps')
+	return {
+		props: {
+			test: 'test message',
+		},
+	}
+}
 
 // const AuthShowcase: React.FC = () => {
 // 	const { data: sessionData } = useSession()
