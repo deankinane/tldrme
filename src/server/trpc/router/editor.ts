@@ -80,4 +80,17 @@ export const editorRouter = router({
 				}
 			}
 		}),
+	removeSection: publicProcedure
+		.input(
+			z.object({
+				sectionId: z.string(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			await prisma?.section.delete({
+				where: {
+					id: input.sectionId,
+				},
+			})
+		}),
 })

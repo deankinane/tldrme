@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import AddSectionButton from '@/modules/editor/components/add-section-button/add_section_button'
 import Section from '@/modules/editor/components/section/section'
 import DropTarget from '@/modules/editor/components/section/drop-target'
@@ -6,6 +6,7 @@ import { type SectionModel } from '@/utils/common/types'
 import reorderSections from '../../utils/reorder-sections'
 import { trpc } from '@/utils/trpc'
 import { v4 as uuid } from 'uuid'
+import TrashDropTarget from '../trash-drop-target/trash-drop-target'
 
 interface Props {
 	resumeId: string
@@ -19,10 +20,10 @@ export default function EditorColumn({
 	sections: pSections,
 }: Props) {
 	const [sections, setSections] = useState(pSections)
-	const [draggedItemIndex, setDraggedItemIndex] = useState(-1)
+	// const [draggedItemIndex, setDraggedItemIndex] = useState(-1)
+	const [showTrashTarget, setShowTrashTarget] = useState(false)
 	const newQueue = useRef<string[]>([])
 
-	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
 	const mAddSection = trpc.editor.addSection.useMutation({
 		onSuccess: (d) => {
 			if (!d) return
@@ -40,6 +41,7 @@ export default function EditorColumn({
 		},
 	})
 	const mReorderSections = trpc.editor.reorderSection.useMutation()
+	const mRemoveSection = trpc.editor.removeSection.useMutation()
 
 	const onAddSectionClicked = useCallback(() => {
 		const newSection: SectionModel = {
@@ -64,28 +66,26 @@ export default function EditorColumn({
 		})
 	}, [columnIndex, mAddSection, resumeId, sections.length])
 
-	const onUpdateSection = useCallback(
-		(s: SectionModel) => {
-			setSections((secs) => {
-				secs.splice(s.order, 1, s)
-				return [...secs]
-			})
-
-			mUpdateSectionTitle.mutate({
-				sectionId: s.id,
-				title: s.title,
-			})
-			return
-		},
-		[mUpdateSectionTitle]
-	)
+	const onUpdateSection = useCallback((s: SectionModel) => {
+		setSections((secs) => {
+			secs.splice(s.order, 1, { ...s })
+			return [...secs]
+		})
+		return
+	}, [])
 
 	const onDragStart = useCallback((index: number) => {
-		setDraggedItemIndex(index)
+		// setDraggedItemIndex(index)
+		setShowTrashTarget(true)
+	}, [])
+
+	const onDragEnd = useCallback(() => {
+		setShowTrashTarget(false)
 	}, [])
 
 	const onItemDropped = useCallback(
-		(droppedIndex: number) => {
+		(itemId: string, droppedIndex: number) => {
+			const draggedItemIndex = sections.findIndex((x) => x.id == itemId)
 			const newOrder = reorderSections(
 				sections,
 				draggedItemIndex,
@@ -98,7 +98,21 @@ export default function EditorColumn({
 				})
 			)
 		},
-		[draggedItemIndex, mReorderSections, sections]
+		[mReorderSections, sections]
+	)
+
+	const onTrashDropped = useCallback(
+		(itemId: string) => {
+			setSections((secs) => {
+				return secs.filter((s) => s.id !== itemId)
+			})
+
+			mRemoveSection.mutate({
+				sectionId: itemId,
+			})
+			setShowTrashTarget(false)
+		},
+		[mRemoveSection]
 	)
 
 	return (
@@ -114,6 +128,7 @@ export default function EditorColumn({
 						index={i}
 						model={s}
 						onDragStart={onDragStart}
+						onDragEnd={onDragEnd}
 						onModelUpdated={onUpdateSection}
 					></Section>
 				</div>
@@ -124,6 +139,10 @@ export default function EditorColumn({
 				onItemDropped={onItemDropped}
 			/>
 			<AddSectionButton onAddSectionClicked={onAddSectionClicked} />
+			<TrashDropTarget
+				onItemDropped={onTrashDropped}
+				show={showTrashTarget}
+			/>
 		</div>
 	)
 }

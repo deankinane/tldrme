@@ -15,3 +15,9 @@ export type SectionModel = Prisma.SectionGetPayload<{
 		elements: true
 	}
 }>
+
+export type SubTitleModel = Prisma.ElementGetPayload<{
+	include: {
+		elementSubTitle: true
+	}
+}>

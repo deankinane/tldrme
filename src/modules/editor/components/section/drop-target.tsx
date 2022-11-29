@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react'
 interface Props {
 	index: number
 	columnIndex: number
-	onItemDropped: (index: number) => void
+	onItemDropped: (itemId: string, index: number) => void
 }
 export default function DropTarget({
 	index,
@@ -14,18 +14,20 @@ export default function DropTarget({
 
 	const validSource = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
+			const source = parseInt(ev.dataTransfer.getData('sourceColumn'))
+			const itemIndex = parseInt(ev.dataTransfer.getData('itemIndex'))
 			return (
-				ev.dataTransfer.getData('sourceColumn') ===
-				columnIndex.toString()
+				source === columnIndex &&
+				(index < itemIndex || Math.abs(itemIndex - index) > 1)
 			)
 		},
-		[columnIndex]
+		[columnIndex, index]
 	)
 
 	const onDrop = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
 			ev.preventDefault()
-			onItemDropped(index)
+			onItemDropped(ev.dataTransfer.getData('itemId'), index)
 			setDragHover(false)
 		},
 		[index, onItemDropped]
