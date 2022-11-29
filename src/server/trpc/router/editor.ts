@@ -1,3 +1,4 @@
+import { ElementType } from '@prisma/client'
 import { z } from 'zod'
 
 import { router, publicProcedure } from '../trpc'
@@ -93,11 +94,12 @@ export const editorRouter = router({
 				},
 			})
 		}),
-	addSubTitleElement: publicProcedure
+	addElement: publicProcedure
 		.input(
 			z.object({
 				sectionId: z.string(),
 				order: z.number(),
+				type: z.nativeEnum(ElementType),
 			})
 		)
 		.mutation(async ({ input }) => {
@@ -105,12 +107,28 @@ export const editorRouter = router({
 				data: {
 					sectionId: input.sectionId,
 					order: input.order,
-					type: 'SubTitle',
-					elementSubTitle: {
-						create: {
-							text: 'Subtitle',
-						},
-					},
+					type: input.type,
+					text: 'New Element',
+					icon: input.type === 'IconText' ? 'check' : '',
+				},
+			})
+		}),
+	updateElement: publicProcedure
+		.input(
+			z.object({
+				elementId: z.string(),
+				text: z.string(),
+				icon: z.optional(z.string()),
+			})
+		)
+		.mutation(async ({ input }) => {
+			await prisma?.element.update({
+				where: {
+					id: input.elementId,
+				},
+				data: {
+					text: input.text,
+					icon: input.icon,
 				},
 			})
 		}),

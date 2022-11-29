@@ -52,7 +52,7 @@ export default function EditText({
 					type="text"
 					onChange={onInputChanged}
 					onBlur={onInputBlurred}
-					className={`${fontStyles} w-full overflow-hidden rounded-md p-2 focus-visible:bg-amber-100 focus-visible:outline-none`}
+					className={`${fontStyles} w-full overflow-hidden rounded-md focus-visible:bg-amber-100 focus-visible:outline-none`}
 					value={inputValue}
 					ref={element}
 					onKeyDown={onKeyDown}
@@ -60,7 +60,7 @@ export default function EditText({
 				/>
 			) : (
 				<p
-					className={`${fontStyles} overflow-hidden rounded-md p-2 transition-all duration-300 hover:bg-amber-100`}
+					className={`${fontStyles} overflow-hidden rounded-md transition-all duration-300 hover:bg-amber-100`}
 					onClick={onTextClicked}
 					data-testid="edit-text-p"
 				>

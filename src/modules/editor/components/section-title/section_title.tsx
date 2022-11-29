@@ -8,7 +8,7 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
 export default function SectionTitle({ text, onTextChanged, ...props }: Props) {
 	return (
 		<EditText
-			fontStyles="text-3xl font-medium text-purple-800"
+			fontStyles="text-3xl font-medium text-purple-800 p-2"
 			text={text}
 			onTextChanged={onTextChanged}
 			{...props}

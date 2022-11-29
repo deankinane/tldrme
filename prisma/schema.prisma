@@ -88,24 +88,9 @@ model Element {
   sectionId String
   type ElementType
   order Int
-  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  elementIconText ElementIconText?
-  elementSubTitle ElementSubTitle?
-}
-
-model ElementIconText {
-  id String @id @default(cuid())
-  elementId String @unique
+  text String
   icon String
-  text String
-  element Element @relation(fields: [elementId], references: [id])
-}
-
-model ElementSubTitle {
-  id String @id @default(cuid())
-  elementId String @unique
-  text String
-  element Element @relation(fields: [elementId], references: [id])
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 }
 
 enum ElementType {

@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import React from 'react'
 import SectionTitle from '@/modules/editor/components/section-title/section_title'
-import type { SectionModel, SubTitleModel } from '@/utils/common/types'
+import type { SectionModel } from '@/utils/common/types'
 import AddElementButton from '../add-element-button/add-element-button'
 import { v4 as uuidv4 } from 'uuid'
 import { trpc } from '@/utils/trpc'
-import SubTitleElement from '../elements/subtitle-element/subtitle-element'
+import type { Element } from '@prisma/client'
+import BaseElement from '../elements/base-element'
 
 interface Props {
 	index: number
@@ -27,7 +28,7 @@ export default function Section({
 	const newQueue = useRef<string[]>([])
 
 	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
-	const mAddSubTitle = trpc.editor.addSubTitleElement.useMutation({
+	const mAddElement = trpc.editor.addElement.useMutation({
 		onSuccess: (d) => {
 			if (!d) return
 			const mergeId =
@@ -77,31 +78,38 @@ export default function Section({
 	)
 
 	const addSubtitle = useCallback(() => {
-		const newEl: SubTitleModel = {
+		const newEl: Element = {
 			id: uuidv4(),
 			order: model.elements.length,
 			type: 'SubTitle',
 			sectionId: model.id,
-			elementSubTitle: {
-				elementId: '',
-				id: '',
-				text: 'Subtitle',
-			},
+			text: 'Subtitle',
+			icon: '',
 		}
 
 		newQueue.current.push(newEl.id)
 
 		model.elements.push(newEl)
 		onModelUpdated(model)
-		mAddSubTitle.mutate({
+		mAddElement.mutate({
 			sectionId: model.id,
 			order: model.elements.length,
+			type: 'SubTitle',
 		})
-	}, [mAddSubTitle, model, onModelUpdated])
+	}, [mAddElement, model, onModelUpdated])
 
 	const onAddElementClicked = useCallback(() => {
 		addSubtitle()
 	}, [addSubtitle])
+
+	const onElementUpdated = useCallback(
+		(element: Element) => {
+			const idx = model.elements.findIndex((x) => x.id === element.id)
+			model.elements.splice(idx, 1, element)
+			onModelUpdated(model)
+		},
+		[model, onModelUpdated]
+	)
 
 	return (
 		<div
@@ -112,15 +120,19 @@ export default function Section({
 		>
 			<SectionTitle text={model.title} onTextChanged={onTextChanged} />
 			{model.elements.map((e) => {
-				if (e.type === 'SubTitle')
-					return (
-						<SubTitleElement
-							key={e.id}
-							model={e as SubTitleModel}
-						/>
-					)
-				else if (e.type === 'IconText')
-					return <div key={e.id}>IconText</div>
+				return (
+					<BaseElement
+						key={e.id}
+						element={e}
+						onElementUpdated={onElementUpdated}
+						onDragEnd={() => {
+							return
+						}}
+						onDragStart={() => {
+							return
+						}}
+					/>
+				)
 			})}
 			<AddElementButton onAddElementClicked={onAddElementClicked} />
 		</div>
