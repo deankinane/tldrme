@@ -36,6 +36,15 @@ export default function EditText({
 		setInputValue(ev.currentTarget.value)
 	}, [])
 
+	const onKeyDown = useCallback(
+		(ev: React.KeyboardEvent<HTMLInputElement>) => {
+			if (ev.key === 'Enter') {
+				onInputBlurred()
+			}
+		},
+		[onInputBlurred]
+	)
+
 	return (
 		<div {...props} data-testid="edit-text-wrapper">
 			{editMode ? (
@@ -46,6 +55,7 @@ export default function EditText({
 					className={`${fontStyles} w-full overflow-hidden rounded-md p-2 focus-visible:bg-amber-100 focus-visible:outline-none`}
 					value={inputValue}
 					ref={element}
+					onKeyDown={onKeyDown}
 					data-testid="edit-text-input"
 				/>
 			) : (

@@ -120,4 +120,16 @@ describe('EditText', () => {
 		const input = screen.getByTestId('edit-text-input')
 		expect(input.getAttribute('class')).toContain(fontStyles)
 	})
+
+	it('should switch back to display mode when Enter key pressed', async () => {
+		const user = userEvent.setup()
+		const callback = jest.fn((text: string) => text)
+
+		render(<EditText fontStyles="" onTextChanged={callback} />)
+
+		await user.click(screen.getByTestId('edit-text-p'))
+		await user.type(screen.getByTestId('edit-text-input'), '{enter}')
+		expect(callback).toHaveBeenCalled()
+		expect(screen.getByTestId('edit-text-p')).toBeInTheDocument()
+	})
 })
