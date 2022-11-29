@@ -1,6 +1,7 @@
 import Editor from '@/modules/editor/editor'
 import type { ResumeModel } from '@/utils/common/types'
 import React from 'react'
+import { prisma } from 'src/server/db/client'
 
 interface Props {
 	resumeModel: ResumeModel
@@ -13,7 +14,7 @@ export async function getServerSideProps() {
 	console.log('editor', 'getServerSideProps')
 	const resumeModel = await prisma?.resume.findUnique({
 		where: {
-			id: 'clb2oakir0000ttqkzncmmdqr',
+			id: 'clb0mv3a20002ttog006ac639',
 		},
 		include: {
 			sections: {
