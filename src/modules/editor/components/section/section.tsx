@@ -112,13 +112,14 @@ export default function Section({
 	)
 
 	return (
-		<div
-			className={`${dragged ? 'opacity-50' : ''}`}
-			draggable={true}
-			onDragStart={dragStart}
-			onDragEnd={dragEnd}
-		>
-			<SectionTitle text={model.title} onTextChanged={onTextChanged} />
+		<div className={`${dragged ? 'opacity-60' : ''}`}>
+			<SectionTitle
+				text={model.title}
+				onTextChanged={onTextChanged}
+				draggable={true}
+				onDragStart={dragStart}
+				onDragEnd={dragEnd}
+			/>
 			{model.elements.map((e) => {
 				return (
 					<BaseElement

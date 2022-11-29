@@ -18,7 +18,7 @@ export default function SubTitleElement({ element, onElementUpdated }: Props) {
 	return (
 		<div>
 			<EditText
-				fontStyles="text-xl px-2 pb-4"
+				fontStyles="text-xl px-2 pb-1 mb-4"
 				onTextChanged={onTextChanged}
 				text={element.text}
 			/>

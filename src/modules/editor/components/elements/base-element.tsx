@@ -28,12 +28,19 @@ export default function BaseElement({
 		[mUpdateElement, onElementUpdated]
 	)
 
-	if (element.type === 'SubTitle')
-		return (
-			<SubTitleElement
-				element={element}
-				onElementUpdated={updateElement}
-			/>
-		)
-	else return <></>
+	// const dragStart = useCallback((ev: React.DragEvent<HTMLDivElement>) => {},
+	// [])
+
+	return (
+		<div draggable>
+			{element.type === 'SubTitle' ? (
+				<SubTitleElement
+					element={element}
+					onElementUpdated={updateElement}
+				/>
+			) : (
+				<></>
+			)}
+		</div>
+	)
 }
