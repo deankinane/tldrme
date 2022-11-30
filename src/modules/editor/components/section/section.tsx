@@ -1,6 +1,6 @@
 import { useCallback, useContext, useRef, useState } from 'react'
 import React from 'react'
-import SectionTitle from '@/modules/editor/components/section-title/section_title'
+import SectionTitle from '@/modules/editor/components/section/section_title'
 import type { SectionModel } from '@/utils/common/types'
 import AddElementButton from '../add-element-button/add-element-button'
 import { v4 as uuidv4 } from 'uuid'

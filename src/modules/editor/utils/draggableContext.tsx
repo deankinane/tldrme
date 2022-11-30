@@ -30,7 +30,7 @@ const DraggableDataDefault: DraggableData = {
 
 const DraggableContext = createContext<Draggable>({
 	dragData: DraggableDataDefault,
-	setDragData: (data: DraggableData) => {
+	setDragData: () => {
 		return
 	},
 	endDrag: () => {

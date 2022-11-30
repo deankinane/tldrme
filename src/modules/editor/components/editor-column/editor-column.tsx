@@ -1,30 +1,32 @@
-import React, { useCallback, useContext, useRef, useState } from 'react'
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from 'react'
 import AddSectionButton from '@/modules/editor/components/add-section-button/add_section_button'
 import Section from '@/modules/editor/components/section/section'
 import DropTarget from '@/modules/editor/components/section/drop-target'
 import { type SectionModel } from '@/utils/common/types'
-import reorderSections from '../../utils/reorder-sections'
 import { trpc } from '@/utils/trpc'
 import { v4 as uuid } from 'uuid'
-import TrashDropTarget from '../trash-drop-target/trash-drop-target'
-import type { DraggableData } from '../../utils/draggableContext'
-import { DraggableContext } from '../../utils/draggableContext'
-import { DraggableType } from '../../utils/draggableContext'
+import { ResumeContext } from '../../utils/resumeContext'
 
 interface Props {
-	resumeId: string
 	columnIndex: number
-	sections: SectionModel[]
 }
 
-export default function EditorColumn({
-	resumeId,
-	columnIndex,
-	sections: pSections,
-}: Props) {
-	const [sections, setSections] = useState(pSections)
+export default function EditorColumn({ columnIndex }: Props) {
+	const { resume, updateResume } = useContext(ResumeContext)
+	const [sections, setSections] = useState<SectionModel[]>([])
 	const newQueue = useRef<string[]>([])
-	const { dragData } = useContext(DraggableContext)
+
+	useEffect(() => {
+		setSections(
+			resume.sections.filter((s) => s.columnIndex === columnIndex)
+		)
+	}, [columnIndex, resume.sections])
 
 	const mAddSection = trpc.editor.addSection.useMutation({
 		onSuccess: (d) => {
@@ -35,20 +37,17 @@ export default function EditorColumn({
 					: undefined
 
 			if (mergeId) {
-				setSections((secs) => {
-					secs.forEach((s) => (s.id = s.id === mergeId ? d.id : s.id))
-					return [...secs]
-				})
+				resume.sections.forEach(
+					(s) => (s.id = s.id === mergeId ? d.id : s.id)
+				)
+				updateResume(resume)
 			}
 		},
 	})
-	const mReorderSections = trpc.editor.reorderSection.useMutation()
-	const mRemoveSection = trpc.editor.removeSection.useMutation()
-	const mRemoveElement = trpc.editor.removeElement.useMutation()
 
 	const onAddSectionClicked = useCallback(() => {
 		const newSection: SectionModel = {
-			resumeId,
+			resumeId: resume.id,
 			columnIndex,
 			order: sections.length,
 			title: 'New Section',
@@ -58,16 +57,18 @@ export default function EditorColumn({
 
 		newQueue.current.push(newSection.id)
 
-		setSections((s) => {
-			return [...s, newSection]
-		})
+		resume.sections = [...resume.sections, newSection]
+		setSections(
+			resume.sections.filter((s) => s.columnIndex === columnIndex)
+		)
+		updateResume(resume)
 
 		mAddSection.mutate({
-			resumeId,
+			resumeId: resume.id,
 			columnIndex,
 			order: newSection.order,
 		})
-	}, [columnIndex, mAddSection, resumeId, sections.length])
+	}, [columnIndex, mAddSection, resume, sections.length, updateResume])
 
 	const onUpdateSection = useCallback((s: SectionModel) => {
 		setSections((secs) => {
@@ -78,77 +79,11 @@ export default function EditorColumn({
 		return
 	}, [])
 
-	const onItemDropped = useCallback(
-		(itemId: string, droppedIndex: number) => {
-			const draggedItemIndex = sections.findIndex((x) => x.id == itemId)
-			const newOrder = reorderSections(
-				sections,
-				draggedItemIndex,
-				droppedIndex
-			)
-			setSections(newOrder)
-			mReorderSections.mutate(
-				newOrder.map((s) => {
-					return { sectionId: s.id, newOrder: s.order }
-				})
-			)
-		},
-		[mReorderSections, sections]
-	)
-
-	const removeSection = useCallback(
-		(itemId: string) => {
-			setSections((secs) => {
-				return secs.filter((s) => s.id !== itemId)
-			})
-
-			mRemoveSection.mutate({
-				sectionId: itemId,
-			})
-		},
-		[mRemoveSection]
-	)
-
-	const removeElement = useCallback(
-		(sectionId: string, elementId: string) => {
-			setSections((secs) => {
-				const s = secs.find((x) => x.id === sectionId)
-				if (s) {
-					s.elements = s.elements.filter((e) => e.id !== elementId)
-				}
-				return [...secs]
-			})
-
-			mRemoveElement.mutate({
-				elementId: elementId,
-			})
-		},
-		[mRemoveElement]
-	)
-
-	const onTrashDropped = useCallback(
-		(data: DraggableData) => {
-			if (data.itemType === DraggableType.SECTION && data.sectionId)
-				removeSection(data.sectionId)
-			else if (
-				data.itemType === DraggableType.ELEMENT &&
-				data.sectionId &&
-				data.elementId
-			)
-				removeElement(data.sectionId, data.elementId)
-		},
-		[removeSection, removeElement]
-	)
-
 	return (
 		<div>
 			{sections.map((s, i) => (
 				<div key={s.id}>
-					<DropTarget
-						index={i}
-						columnIndex={columnIndex}
-						onItemDropped={onItemDropped}
-					/>
+					<DropTarget index={i} columnIndex={columnIndex} />
 					<Section
 						index={i}
 						model={s}
@@ -156,18 +91,8 @@ export default function EditorColumn({
 					></Section>
 				</div>
 			))}
-			<DropTarget
-				index={sections.length}
-				columnIndex={columnIndex}
-				onItemDropped={onItemDropped}
-			/>
+			<DropTarget index={sections.length} columnIndex={columnIndex} />
 			<AddSectionButton onAddSectionClicked={onAddSectionClicked} />
-			<TrashDropTarget
-				onItemDropped={onTrashDropped}
-				show={
-					dragData.itemInDrag && dragData.columnIndex === columnIndex
-				}
-			/>
 		</div>
 	)
 }

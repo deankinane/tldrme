@@ -1,26 +1,23 @@
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom/extend-expect'
 import EditText from './edit-text'
 
 describe('EditText', () => {
 	it('should display the text passed to the text prop', () => {
-		const intialText = 'TESTABC'
-		render(
+		const initialText = 'TESTABC'
+		cy.mount(
 			<EditText
 				fontStyles=""
-				text={intialText}
+				text={initialText}
 				onTextChanged={() => {
 					return
 				}}
 			/>
 		)
-		const p = screen.getByTestId('edit-text-p')
-		expect(p.textContent).toBe(intialText)
+
+		cy.g('edit-text-p').should('have.text', initialText)
 	})
 
 	it('should display the default text if nothing passed to text prop', () => {
-		render(
+		cy.mount(
 			<EditText
 				fontStyles=""
 				onTextChanged={() => {
@@ -28,13 +25,12 @@ describe('EditText', () => {
 				}}
 			/>
 		)
-		const p = screen.getByTestId('edit-text-p')
-		expect(p.textContent).toBe('Click to edit')
+		cy.g('edit-text-p').should('have.text', 'Click to edit')
 	})
 
 	it('should apply css classes in fontStyles prop to the p element', () => {
 		const fontStyles = 'test-font-styles'
-		render(
+		cy.mount(
 			<EditText
 				fontStyles={fontStyles}
 				onTextChanged={() => {
@@ -42,13 +38,12 @@ describe('EditText', () => {
 				}}
 			/>
 		)
-		const p = screen.getByTestId('edit-text-p')
-		expect(p.getAttribute('class')).toContain(fontStyles)
+
+		cy.g('edit-text-p').should('have.class', fontStyles)
 	})
 
-	it('should switch to edit mode when user clicks on it', async () => {
-		const user = userEvent.setup()
-		render(
+	it('should switch to edit mode when user clicks on it', () => {
+		cy.mount(
 			<EditText
 				fontStyles=""
 				onTextChanged={() => {
@@ -56,15 +51,12 @@ describe('EditText', () => {
 				}}
 			/>
 		)
-
-		await user.click(screen.getByTestId('edit-text-p'))
-		const input = screen.getByTestId('edit-text-input')
-		expect(input).toHaveFocus()
+		cy.g('edit-text-p').click()
+		cy.g('edit-text-input').should('have.focus')
 	})
 
-	it('should switch to display mode when user clicks on something else', async () => {
-		const user = userEvent.setup()
-		render(
+	it('should switch to display mode when user clicks on something else', () => {
+		cy.mount(
 			<div>
 				<EditText
 					fontStyles=""
@@ -75,21 +67,18 @@ describe('EditText', () => {
 				<p data-testid="otherelement">to click on</p>
 			</div>
 		)
-		await user.click(screen.getByTestId('edit-text-p'))
-		const input = screen.getByTestId('edit-text-input')
-		await user.click(screen.getByTestId('otherelement'))
 
-		const p = screen.getByTestId('edit-text-p')
-		expect(p).toBeInTheDocument()
-		expect(input).not.toBeInTheDocument()
+		cy.g('edit-text-p').click()
+		cy.g('otherelement').click()
+		cy.g('edit-text-input').should('not.exist')
+		cy.g('edit-text-p').should('exist')
 	})
 
-	it('should trigger callback function when switching back to display mode', async () => {
-		const user = userEvent.setup()
+	it('should trigger callback function when switching back to display mode', () => {
 		const initialText = 'initial'
-		const callback = jest.fn((text: string) => text)
+		const callback = cy.spy().as('cb')
 
-		render(
+		cy.mount(
 			<div>
 				<EditText
 					fontStyles=""
@@ -99,16 +88,15 @@ describe('EditText', () => {
 				<p data-testid="otherelement">to click on</p>
 			</div>
 		)
-		await user.click(screen.getByTestId('edit-text-p'))
-		await user.click(screen.getByTestId('otherelement'))
-		expect(callback).toHaveBeenCalled()
-		expect(callback.mock.results[0]?.value).toBe(initialText)
+		cy.g('edit-text-p').click()
+		cy.g('otherelement').click()
+
+		cy.g('@cb').should('have.been.calledWith', initialText)
 	})
 
-	it('should apply css classes in fontStyles prop to the input element', async () => {
-		const user = userEvent.setup()
+	it('should apply css classes in fontStyles prop to the input element', () => {
 		const fontStyles = 'test-font-styles'
-		render(
+		cy.mount(
 			<EditText
 				fontStyles={fontStyles}
 				onTextChanged={() => {
@@ -116,20 +104,19 @@ describe('EditText', () => {
 				}}
 			/>
 		)
-		await user.click(screen.getByTestId('edit-text-p'))
-		const input = screen.getByTestId('edit-text-input')
-		expect(input.getAttribute('class')).toContain(fontStyles)
+		cy.g('edit-text-p').click()
+		cy.g('edit-text-input').should('have.class', fontStyles)
 	})
 
-	it('should switch back to display mode when Enter key pressed', async () => {
-		const user = userEvent.setup()
-		const callback = jest.fn((text: string) => text)
+	it('should switch back to display mode when Enter key pressed', () => {
+		const callback = cy.spy().as('cb')
 
-		render(<EditText fontStyles="" onTextChanged={callback} />)
+		cy.mount(<EditText fontStyles="" onTextChanged={callback} />)
 
-		await user.click(screen.getByTestId('edit-text-p'))
-		await user.type(screen.getByTestId('edit-text-input'), '{enter}')
-		expect(callback).toHaveBeenCalled()
-		expect(screen.getByTestId('edit-text-p')).toBeInTheDocument()
+		cy.g('edit-text-p').click()
+		cy.g('edit-text-input').type('{enter}')
+
+		cy.g('@cb').should('have.been.called')
+		cy.g('edit-text-p').should('exist')
 	})
 })

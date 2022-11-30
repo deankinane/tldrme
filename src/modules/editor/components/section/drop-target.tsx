@@ -1,18 +1,19 @@
+import { trpc } from '@/utils/trpc'
 import React, { useCallback, useContext, useState } from 'react'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
+import reorderSections from '../../utils/reorder-sections'
+import { ResumeContext } from '../../utils/resumeContext'
 
 interface Props {
 	index: number
 	columnIndex: number
-	onItemDropped: (itemId: string, index: number) => void
 }
-export default function DropTarget({
-	index,
-	columnIndex,
-	onItemDropped,
-}: Props) {
+export default function DropTarget({ index, columnIndex }: Props) {
 	const [dragHover, setDragHover] = useState(false)
 	const { dragData } = useContext(DraggableContext)
+	const { resume, updateResume } = useContext(ResumeContext)
+
+	const mReorderSections = trpc.editor.reorderSection.useMutation()
 
 	const validSource = useCallback(() => {
 		return (
@@ -28,6 +29,34 @@ export default function DropTarget({
 		dragData.itemType,
 		index,
 	])
+
+	const onItemDropped = useCallback(
+		(itemId: string, droppedIndex: number) => {
+			const columnSections = resume.sections.filter(
+				(s) => s.columnIndex === columnIndex
+			)
+			const draggedItemIndex = columnSections.findIndex(
+				(x) => x.id == itemId
+			)
+			const newOrder = reorderSections(
+				columnSections,
+				draggedItemIndex,
+				droppedIndex
+			)
+			resume.sections = [
+				...resume.sections.filter((s) => s.columnIndex !== columnIndex),
+				...newOrder,
+			]
+			updateResume(resume)
+			mReorderSections.mutate(
+				newOrder.map((s) => {
+					return { sectionId: s.id, newOrder: s.order }
+				})
+			)
+		},
+
+		[columnIndex, mReorderSections, resume, updateResume]
+	)
 
 	const onDrop = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
