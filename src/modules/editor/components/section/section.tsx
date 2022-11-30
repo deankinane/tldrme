@@ -42,16 +42,20 @@ export default function Section({
 			}
 		},
 	})
-	const dragStart = useCallback(() => {
-		setDragData({
-			itemInDrag: true,
-			itemType: DraggableType.SECTION,
-			sectionId: model.id,
-			columnIndex: model.columnIndex,
-			itemIndex: index,
-		})
-		setDragged(true)
-	}, [index, model.columnIndex, model.id, setDragData])
+	const dragStart = useCallback(
+		(ev: React.DragEvent<HTMLDivElement>) => {
+			ev.dataTransfer.effectAllowed = 'move'
+			setDragData({
+				itemInDrag: true,
+				itemType: DraggableType.SECTION,
+				sectionId: model.id,
+				columnIndex: model.columnIndex,
+				itemIndex: index,
+			})
+			setDragged(true)
+		},
+		[index, model.columnIndex, model.id, setDragData]
+	)
 
 	const dragEnd = useCallback(() => {
 		setDragged(false)
