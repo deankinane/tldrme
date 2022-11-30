@@ -1,6 +1,6 @@
 import type { ResumeModel } from '@/utils/common/types'
 import { useSmallScreen } from '@/utils/hooks/useMediaQuery'
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import EditorColumn from './components/editor-column/editor-column'
 import Header from './components/header/header'
 import TrashDropTarget from './components/trash-drop-target/trash-drop-target'
@@ -14,7 +14,7 @@ export default function Editor({ resume }: Props) {
 
 	return (
 		<ResumeProvider initialState={resume}>
-			<div className="h-full overflow-hidden px-8 shadow-lg md:overflow-auto lg:px-16">
+			<div className="h-full overflow-hidden px-8 shadow-lg md:h-auto md:min-h-full md:overflow-visible lg:px-16">
 				<Header />
 
 				<div
@@ -25,7 +25,7 @@ export default function Editor({ resume }: Props) {
 					}`}
 				>
 					<div
-						className={`w-full overflow-y-scroll px-4 md:w-96 md:px-0 ${
+						className={`w-full overflow-y-scroll px-4 md:w-80 md:overflow-y-visible md:px-0 lg:w-96 ${
 							smallScreen ? 'shrink-0 snap-center' : ''
 						}`}
 					>
@@ -33,8 +33,8 @@ export default function Editor({ resume }: Props) {
 					</div>
 
 					<div
-						className={`h-full w-full  overflow-y-scroll px-4 md:px-0 md:pl-12 lg:w-auto lg:flex-grow lg:pl-16 ${
-							smallScreen ? 'shrink-0 snap-center' : ''
+						className={`h-full overflow-y-scroll px-4 md:flex-grow md:overflow-y-visible  md:px-0 md:pl-12 lg:w-auto lg:pl-16 ${
+							smallScreen ? 'w-full shrink-0 snap-center' : ''
 						}`}
 					>
 						<EditorColumn columnIndex={1} />

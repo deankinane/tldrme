@@ -50,12 +50,12 @@ export default function HeaderTitle({
 	return (
 		<div className="flex h-full flex-col justify-center">
 			<EditText
-				fontStyles="text-3xl p-2 lg:text-5xl font-thin"
+				fontStyles="text-2xl font-normal p-2 md:text-3xl lg:font-light lg:text-5xl font-thin"
 				onTextChanged={onTitleChanged}
 				text={title}
 			/>
 			<EditText
-				fontStyles="text-lg p-2 lg:text-2xl font-thin"
+				fontStyles="text-lg px-2 py-1 lg:text-2xl font-thin"
 				onTextChanged={onSubTitleChanged}
 				text={subTitle}
 			/>

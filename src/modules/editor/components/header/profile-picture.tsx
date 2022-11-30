@@ -5,7 +5,7 @@ interface Props {
 }
 export default function ProfilePicture({ imageUrl }: Props) {
 	return (
-		<div className="md: h-12 w-12 overflow-hidden rounded-full md:h-24 md:w-24 lg:h-48 lg:w-48">
+		<div className="md: h-16 w-16 overflow-hidden rounded-full md:h-24 md:w-24 lg:h-48 lg:w-48">
 			{imageUrl ? (
 				<Image
 					src={imageUrl}
