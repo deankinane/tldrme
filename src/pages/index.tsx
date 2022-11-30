@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import React from 'react'
 import { trpc } from '../utils/trpc'
 import Link from 'next/link'
+import Script from 'next/script'
 
 interface Props {
 	test: string
@@ -20,7 +21,6 @@ const Home: NextPage<Props> = ({ test }: Props) => {
 				<p>{test}</p>
 				<Link href="/editor">Editor</Link>
 			</main>
-			<script src="/DragDropTouch.js" defer />
 		</>
 	)
 }
