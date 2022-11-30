@@ -14,13 +14,13 @@ export default function Editor({ resume }: Props) {
 		polyfill()
 	}, [])
 	return (
-		<div className="min-h-full pl-16 pr-16 shadow-lg">
+		<div className="min-h-full px-8 shadow-lg lg:px-16">
 			<div className="flex h-52 lg:h-96">
-				<div className="flex h-full w-28 min-w-fit items-center lg:w-96 lg:min-w-[24rem]">
+				<div className="flex h-full min-w-fit items-center lg:w-96 lg:min-w-[24rem]">
 					<ProfilePicture imageUrl={resume.profilePicUrl || ''} />
 					{/* <ProfilePicture /> */}
 				</div>
-				<div className="flex-grow pl-16">
+				<div className="flex-grow pl-8 md:pl-16">
 					<HeaderTitle
 						resumeId={resume.id}
 						title={resume.headerTitle}
@@ -28,8 +28,8 @@ export default function Editor({ resume }: Props) {
 					/>
 				</div>
 			</div>
-			<div className="flex flex-col lg:flex-row">
-				<div className="w-full lg:w-96">
+			<div className="flex flex-col md:flex-row">
+				<div className="w-full md:w-96">
 					<EditorColumn
 						resumeId={resume.id}
 						columnIndex={1}
@@ -38,7 +38,7 @@ export default function Editor({ resume }: Props) {
 						)}
 					/>
 				</div>
-				<div className="w-full lg:w-auto lg:flex-grow lg:pl-16">
+				<div className="w-full md:pl-12 lg:w-auto lg:flex-grow lg:pl-16">
 					<EditorColumn
 						resumeId={resume.id}
 						columnIndex={2}
