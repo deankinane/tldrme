@@ -24,7 +24,7 @@ export default function EditorColumn({
 }: Props) {
 	const [sections, setSections] = useState(pSections)
 	const newQueue = useRef<string[]>([])
-	const { dragData, endDrag } = useContext(DraggableContext)
+	const { dragData } = useContext(DraggableContext)
 
 	const mAddSection = trpc.editor.addSection.useMutation({
 		onSuccess: (d) => {
@@ -136,10 +136,8 @@ export default function EditorColumn({
 				data.elementId
 			)
 				removeElement(data.sectionId, data.elementId)
-
-			endDrag()
 		},
-		[removeSection, removeElement, endDrag]
+		[removeSection, removeElement]
 	)
 
 	return (

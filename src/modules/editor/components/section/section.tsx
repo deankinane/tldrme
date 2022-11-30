@@ -23,7 +23,7 @@ export default function Section({
 	const [dragged, setDragged] = useState(false)
 	const [model] = useState(pModel)
 	const newQueue = useRef<string[]>([])
-	const { setDragData } = useContext(DraggableContext)
+	const { setDragData, endDrag } = useContext(DraggableContext)
 
 	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
 	const mAddElement = trpc.editor.addElement.useMutation({
@@ -55,7 +55,8 @@ export default function Section({
 
 	const dragEnd = useCallback(() => {
 		setDragged(false)
-	}, [])
+		endDrag()
+	}, [endDrag])
 
 	const onTextChanged = useCallback(
 		(text: string) => {

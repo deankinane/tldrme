@@ -20,6 +20,7 @@ const Home: NextPage<Props> = ({ test }: Props) => {
 				<p>{test}</p>
 				<Link href="/editor">Editor</Link>
 			</main>
+			<script src="/DragDropTouch.js" defer />
 		</>
 	)
 }
