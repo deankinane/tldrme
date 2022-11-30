@@ -1,31 +1,32 @@
 import React, { useCallback, useContext, useState } from 'react'
+import type { DraggableData } from '../../utils/draggableContext'
 import { DraggableContext } from '../../utils/draggableContext'
 
 interface Props {
 	show: boolean
-	onItemDropped: (itemId: string) => void
+	onItemDropped: (data: DraggableData) => void
 }
 export default function TrashDropTarget({ show, onItemDropped }: Props) {
 	const [dragHover, setDragHover] = useState(false)
-	const { dragData, setDragData } = useContext(DraggableContext)
+	const { dragData } = useContext(DraggableContext)
 
 	const onDrop = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
 			ev.preventDefault()
-			onItemDropped(dragData.itemId)
+			onItemDropped(dragData)
 		},
-		[dragData.itemId, onItemDropped]
+		[onItemDropped, dragData]
 	)
 
 	const onDragOver = useCallback((ev: React.DragEvent<HTMLDivElement>) => {
 		ev.preventDefault()
 	}, [])
 
-	const onDragEnter = useCallback((ev: React.DragEvent<HTMLDivElement>) => {
+	const onDragEnter = useCallback(() => {
 		setDragHover(true)
 	}, [])
 
-	const onDragLeave = useCallback((ev: React.DragEvent<HTMLDivElement>) => {
+	const onDragLeave = useCallback(() => {
 		setDragHover(false)
 	}, [])
 

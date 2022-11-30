@@ -5,15 +5,8 @@ import SubTitleElement from './subtitle-element/subtitle-element'
 interface Props {
 	element: Element
 	onElementUpdated: (element: Element) => void
-	onDragStart: () => void
-	onDragEnd: () => void
 }
-export default function BaseElement({
-	element,
-	onElementUpdated,
-	onDragStart,
-	onDragEnd,
-}: Props) {
+export default function BaseElement({ element, onElementUpdated }: Props) {
 	const mUpdateElement = trpc.editor.updateElement.useMutation()
 
 	const updateElement = useCallback(

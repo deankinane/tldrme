@@ -7,27 +7,23 @@ import { v4 as uuidv4 } from 'uuid'
 import { trpc } from '@/utils/trpc'
 import type { Element } from '@prisma/client'
 import BaseElement from '../elements/base-element'
-import { DraggableContext } from '../../utils/draggableContext'
+import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 
 interface Props {
 	index: number
 	model: SectionModel
 	onModelUpdated: (model: SectionModel) => void
-	onDragStart: () => void
-	onDragEnd: () => void
 }
 
 export default function Section({
 	index,
 	model: pModel,
 	onModelUpdated,
-	onDragStart,
-	onDragEnd,
 }: Props) {
 	const [dragged, setDragged] = useState(false)
 	const [model] = useState(pModel)
 	const newQueue = useRef<string[]>([])
-	const { dragData, setDragData } = useContext(DraggableContext)
+	const { setDragData } = useContext(DraggableContext)
 
 	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
 	const mAddElement = trpc.editor.addElement.useMutation({
@@ -46,29 +42,20 @@ export default function Section({
 			}
 		},
 	})
-	const dragStart = useCallback(
-		(ev: React.DragEvent<HTMLDivElement>) => {
-			// ev.dataTransfer.setData(
-			// 	'sourceColumn',
-			// 	model.columnIndex.toString()
-			// )
-			// ev.dataTransfer.setData('itemId', model.id)
-			// ev.dataTransfer.setData('itemIndex', index.toString())
-			setDragData({
-				itemId: model.id,
-				columnIndex: model.columnIndex,
-				itemIndex: index,
-			})
-			setDragged(true)
-			onDragStart()
-		},
-		[index, model.columnIndex, model.id, onDragStart, setDragData]
-	)
+	const dragStart = useCallback(() => {
+		setDragData({
+			itemInDrag: true,
+			itemType: DraggableType.SECTION,
+			sectionId: model.id,
+			columnIndex: model.columnIndex,
+			itemIndex: index,
+		})
+		setDragged(true)
+	}, [index, model.columnIndex, model.id, setDragData])
 
 	const dragEnd = useCallback(() => {
 		setDragged(false)
-		onDragEnd()
-	}, [onDragEnd])
+	}, [])
 
 	const onTextChanged = useCallback(
 		(text: string) => {
@@ -134,12 +121,6 @@ export default function Section({
 						key={e.id}
 						element={e}
 						onElementUpdated={onElementUpdated}
-						onDragEnd={() => {
-							return
-						}}
-						onDragStart={() => {
-							return
-						}}
 					/>
 				)
 			})}

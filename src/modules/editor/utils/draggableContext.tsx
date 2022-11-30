@@ -1,8 +1,16 @@
-import type { HTMLAttributes, PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 import { createContext, useCallback, useState } from 'react'
 
+export enum DraggableType {
+	SECTION = 'SECTION',
+	ELEMENT = 'ELEMENT',
+}
+
 export type DraggableData = {
-	itemId: string
+	itemInDrag: boolean
+	itemType: DraggableType
+	sectionId?: string
+	elementId?: string
 	itemIndex: number
 	columnIndex: number
 }
@@ -10,20 +18,25 @@ export type DraggableData = {
 export interface Draggable {
 	dragData: DraggableData
 	setDragData: (data: DraggableData) => void
+	endDrag: () => void
 }
 
 const DraggableDataDefault: DraggableData = {
-	itemId: '',
+	itemInDrag: false,
+	itemType: DraggableType.SECTION,
 	itemIndex: 0,
 	columnIndex: 0,
 }
-const DraggableDefault: Draggable = {
+
+const DraggableContext = createContext<Draggable>({
 	dragData: DraggableDataDefault,
 	setDragData: (data: DraggableData) => {
 		return
 	},
-}
-const DraggableContext = createContext<Draggable>(DraggableDefault)
+	endDrag: () => {
+		return
+	},
+})
 
 import React from 'react'
 
@@ -35,9 +48,14 @@ function DraggableProvider({ children }: PropsWithChildren) {
 		setDraggable(data)
 	}, [])
 
+	const endDrag = useCallback(() => {
+		setDraggable(DraggableDataDefault)
+	}, [])
+
 	const draggableState: Draggable = {
 		dragData: draggable,
 		setDragData: setData,
+		endDrag,
 	}
 	return (
 		<DraggableContext.Provider value={draggableState}>

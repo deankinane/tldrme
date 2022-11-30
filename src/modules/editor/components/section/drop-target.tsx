@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react'
-import { DraggableContext } from '../../utils/draggableContext'
+import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 
 interface Props {
 	index: number
@@ -12,55 +12,53 @@ export default function DropTarget({
 	onItemDropped,
 }: Props) {
 	const [dragHover, setDragHover] = useState(false)
-	const { dragData, setDragData } = useContext(DraggableContext)
+	const { dragData, endDrag } = useContext(DraggableContext)
 
-	const validSource = useCallback(
-		(ev: React.DragEvent<HTMLDivElement>) => {
-			const source = dragData.columnIndex
-			const itemIndex = dragData.itemIndex
-			return (
-				source === columnIndex &&
-				(index < itemIndex || Math.abs(itemIndex - index) > 1)
-			)
-		},
-		[columnIndex, dragData.columnIndex, dragData.itemIndex, index]
-	)
+	const validSource = useCallback(() => {
+		return (
+			dragData.itemType === DraggableType.SECTION &&
+			dragData.columnIndex === columnIndex &&
+			(index < dragData.itemIndex ||
+				Math.abs(dragData.itemIndex - index) > 1)
+		)
+	}, [
+		columnIndex,
+		dragData.columnIndex,
+		dragData.itemIndex,
+		dragData.itemType,
+		index,
+	])
 
 	const onDrop = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
 			ev.preventDefault()
-			onItemDropped(dragData.itemId, index)
+			if (dragData.sectionId) onItemDropped(dragData.sectionId, index)
 			setDragHover(false)
+			endDrag()
 		},
-		[dragData.itemId, index, onItemDropped]
+		[dragData.sectionId, endDrag, index, onItemDropped]
 	)
 
 	const onDragOver = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
-			if (validSource(ev)) {
+			if (validSource()) {
 				ev.preventDefault()
 			}
 		},
 		[validSource]
 	)
 
-	const onDragEnter = useCallback(
-		(ev: React.DragEvent<HTMLDivElement>) => {
-			if (validSource(ev)) {
-				setDragHover(true)
-			}
-		},
-		[validSource]
-	)
+	const onDragEnter = useCallback(() => {
+		if (validSource()) {
+			setDragHover(true)
+		}
+	}, [validSource])
 
-	const onDragLeave = useCallback(
-		(ev: React.DragEvent<HTMLDivElement>) => {
-			if (validSource(ev)) {
-				setDragHover(false)
-			}
-		},
-		[validSource]
-	)
+	const onDragLeave = useCallback(() => {
+		if (validSource()) {
+			setDragHover(false)
+		}
+	}, [validSource])
 
 	return (
 		<div
