@@ -1,13 +1,18 @@
 import type { ResumeModel } from '@/utils/common/types'
-import React from 'react'
+import React, { useEffect } from 'react'
 import EditorColumn from './components/editor-column/editor-column'
 import HeaderTitle from './components/header-title/header-title'
 import ProfilePicture from './components/profile-picture/profile-picture'
+import { polyfill } from 'mobile-drag-drop'
 
 interface Props {
 	resume: ResumeModel
 }
 export default function Editor({ resume }: Props) {
+	useEffect(() => {
+		console.log('loading polyfill')
+		polyfill()
+	}, [])
 	return (
 		<div className="min-h-full pl-16 pr-16 shadow-lg">
 			<div className="flex h-52 lg:h-96">
