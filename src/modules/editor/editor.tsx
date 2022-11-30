@@ -14,7 +14,7 @@ export default function Editor({ resume }: Props) {
 
 	return (
 		<ResumeProvider initialState={resume}>
-			<div className="h-full overflow-hidden px-8 shadow-lg md:h-auto md:min-h-full md:overflow-visible lg:px-16">
+			<div className="h-full overflow-hidden shadow-lg md:h-auto md:min-h-full md:overflow-visible md:px-8 lg:px-16">
 				<Header />
 
 				<div
