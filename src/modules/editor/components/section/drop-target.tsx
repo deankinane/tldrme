@@ -12,7 +12,7 @@ export default function DropTarget({
 	onItemDropped,
 }: Props) {
 	const [dragHover, setDragHover] = useState(false)
-	const { dragData, endDrag } = useContext(DraggableContext)
+	const { dragData } = useContext(DraggableContext)
 
 	const validSource = useCallback(() => {
 		return (
@@ -34,9 +34,8 @@ export default function DropTarget({
 			ev.preventDefault()
 			if (dragData.sectionId) onItemDropped(dragData.sectionId, index)
 			setDragHover(false)
-			endDrag()
 		},
-		[dragData.sectionId, endDrag, index, onItemDropped]
+		[dragData.sectionId, index, onItemDropped]
 	)
 
 	const onDragOver = useCallback(

@@ -8,14 +8,15 @@ interface Props {
 }
 export default function TrashDropTarget({ show, onItemDropped }: Props) {
 	const [dragHover, setDragHover] = useState(false)
-	const { dragData } = useContext(DraggableContext)
+	const { dragData, endDrag } = useContext(DraggableContext)
 
 	const onDrop = useCallback(
 		(ev: React.DragEvent<HTMLDivElement>) => {
 			ev.preventDefault()
 			onItemDropped(dragData)
+			endDrag()
 		},
-		[onItemDropped, dragData]
+		[onItemDropped, dragData, endDrag]
 	)
 
 	const onDragOver = useCallback((ev: React.DragEvent<HTMLDivElement>) => {

@@ -49,7 +49,12 @@ function DraggableProvider({ children }: PropsWithChildren) {
 	}, [])
 
 	const endDrag = useCallback(() => {
-		setDraggable(DraggableDataDefault)
+		setDraggable((d) => {
+			return {
+				...d,
+				itemInDrag: false,
+			}
+		})
 	}, [])
 
 	const draggableState: Draggable = {
