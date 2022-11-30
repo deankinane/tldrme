@@ -5,7 +5,7 @@ import type { SectionModel } from '@/utils/common/types'
 import AddElementButton from '../add-element-button/add-element-button'
 import { v4 as uuidv4 } from 'uuid'
 import { trpc } from '@/utils/trpc'
-import type { Element } from '@prisma/client'
+import type { Element, ElementType } from '@prisma/client'
 import BaseElement from '../elements/base-element'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 
@@ -93,9 +93,12 @@ export default function Section({
 		})
 	}, [mAddElement, model, onModelUpdated])
 
-	const onAddElementClicked = useCallback(() => {
-		addSubtitle()
-	}, [addSubtitle])
+	const onAddElementClicked = useCallback(
+		(type: ElementType) => {
+			if (type === 'SubTitle') addSubtitle()
+		},
+		[addSubtitle]
+	)
 
 	const onElementUpdated = useCallback(
 		(element: Element) => {
