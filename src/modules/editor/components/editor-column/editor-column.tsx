@@ -12,7 +12,7 @@ import { type SectionModel } from '@/utils/common/types'
 import { trpc } from '@/utils/trpc'
 import { v4 as uuid } from 'uuid'
 import { ResumeContext } from '../../utils/resumeContext'
-
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 interface Props {
 	columnIndex: number
 }
@@ -27,6 +27,8 @@ export default function EditorColumn({ columnIndex }: Props) {
 			resume.sections.filter((s) => s.columnIndex === columnIndex)
 		)
 	}, [columnIndex, resume.sections])
+
+	const [animateRef] = useAutoAnimate<HTMLDivElement>()
 
 	const mAddSection = trpc.editor.addSection.useMutation({
 		onSuccess: (d) => {
@@ -58,9 +60,6 @@ export default function EditorColumn({ columnIndex }: Props) {
 		newQueue.current.push(newSection.id)
 
 		resume.sections = [...resume.sections, newSection]
-		setSections(
-			resume.sections.filter((s) => s.columnIndex === columnIndex)
-		)
 		updateResume(resume)
 
 		mAddSection.mutate({
@@ -80,7 +79,7 @@ export default function EditorColumn({ columnIndex }: Props) {
 	}, [])
 
 	return (
-		<div>
+		<div ref={animateRef}>
 			{sections.map((s, i) => (
 				<div key={s.id}>
 					<DropTarget index={i} columnIndex={columnIndex} />

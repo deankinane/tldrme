@@ -1,13 +1,16 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import ElementTypeButton from './element-type-button'
 import { ElementType } from '@prisma/client'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 interface Props {
 	onAddElementClicked: (type: ElementType) => void
 }
 
 export default function AddElementButton({ onAddElementClicked }: Props) {
 	const [menuOpen, setMenuOpen] = useState(false)
+
+	const [animateRef] = useAutoAnimate<HTMLDivElement>()
 
 	const onToggleClick = useCallback(() => {
 		setMenuOpen(!menuOpen)
@@ -18,6 +21,33 @@ export default function AddElementButton({ onAddElementClicked }: Props) {
 		onAddElementClicked(ElementType.SubTitle)
 	}, [onAddElementClicked])
 
+	const buttonList = useMemo(() => {
+		return [
+			{
+				text: 'Subtitle',
+				onClick: onAddSubtitleClick,
+			},
+			{
+				text: 'Icon Text',
+				onClick: () => {
+					return
+				},
+			},
+			{
+				text: 'Bullet Text',
+				onClick: () => {
+					return
+				},
+			},
+			{
+				text: 'Text',
+				onClick: () => {
+					return
+				},
+			},
+		]
+	}, [onAddSubtitleClick])
+
 	return (
 		<div className="m-2 mb-4 flex">
 			<button
@@ -27,18 +57,17 @@ export default function AddElementButton({ onAddElementClicked }: Props) {
 			>
 				<PlusIcon />
 			</button>
-			{menuOpen ? (
-				<div>
-					<ElementTypeButton onClick={onAddSubtitleClick}>
-						Subtitle
-					</ElementTypeButton>
-					<ElementTypeButton>Icon Text</ElementTypeButton>
-					<ElementTypeButton>Bullet Text</ElementTypeButton>
-					<ElementTypeButton>Text</ElementTypeButton>
-				</div>
-			) : (
-				<></>
-			)}
+			<div ref={animateRef} className="grow">
+				{menuOpen ? (
+					buttonList.map((b) => (
+						<ElementTypeButton key={b.text} onClick={b.onClick}>
+							{b.text}
+						</ElementTypeButton>
+					))
+				) : (
+					<></>
+				)}
+			</div>
 		</div>
 	)
 }

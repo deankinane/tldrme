@@ -6,7 +6,7 @@ interface Props extends PropsWithChildren {
 export default function ElementTypeButton({ onClick, children }: Props) {
 	return (
 		<button
-			className="mt-1 mr-2 rounded-lg bg-purple-300 px-2 py-1 text-purple-900 transition-colors hover:bg-purple-400"
+			className="mt-1 mr-2 min-w-fit rounded-lg bg-purple-300 px-2 py-1 text-purple-900 transition-colors hover:bg-purple-400"
 			onClick={onClick}
 		>
 			{children}
