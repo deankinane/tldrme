@@ -96,4 +96,6 @@ model Element {
 enum ElementType {
   IconText
   SubTitle
+  BulletText
+  Text
 }

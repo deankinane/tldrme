@@ -1,4 +1,5 @@
 import type { Element } from '@prisma/client'
+import { ElementType } from '@prisma/client'
 import React, { useCallback } from 'react'
 import EditText from '../../edit-text/edit-text'
 
@@ -16,7 +17,7 @@ export default function SubTitleElement({ element, onElementUpdated }: Props) {
 	)
 
 	return (
-		<div>
+		<div data-testid={`element-${ElementType.SubTitle}`}>
 			<EditText
 				fontStyles="tex-lg lg:text-xl px-2 pb-1 mb-4"
 				onTextChanged={onTextChanged}

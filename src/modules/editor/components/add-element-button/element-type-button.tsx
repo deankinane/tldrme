@@ -1,15 +1,15 @@
-import type { PropsWithChildren } from 'react'
+import type { ComponentProps } from 'react'
 import React from 'react'
-interface Props extends PropsWithChildren {
-	onClick?: () => void
-}
-export default function ElementTypeButton({ onClick, children }: Props) {
+
+export default function ElementTypeButton({
+	...props
+}: ComponentProps<'button'>) {
 	return (
 		<button
-			className="mt-1 mr-2 min-w-fit rounded-lg bg-purple-300 px-2 py-1 font-medium text-purple-900 transition-colors hover:bg-purple-400"
-			onClick={onClick}
+			className="my-1 mr-2 min-w-fit rounded-lg bg-purple-300 px-2 py-1 font-medium text-purple-900 transition-colors hover:bg-purple-400"
+			{...props}
 		>
-			{children}
+			{props.children}
 		</button>
 	)
 }

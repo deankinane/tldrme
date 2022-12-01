@@ -19,11 +19,11 @@ export default function AddSectionButton({
 		>
 			{isLoading ? (
 				<>
-					<Spinner className="h-6 w-6" />
+					<Spinner className="h-6 w-6" data-testid="spinner" />
 				</>
 			) : (
 				<>
-					<PlusCircleIcon className="mr-2 w-6" />
+					<PlusCircleIcon className="mr-2 w-6" data-testid="icon" />
 					Add Section
 				</>
 			)}

@@ -3,9 +3,10 @@ import { useRef } from 'react'
 import { useEffect } from 'react'
 import React, { useCallback, useState } from 'react'
 
-interface Props extends React.HTMLAttributes<HTMLElement> {
+interface Props extends React.ComponentProps<'div'> {
 	fontStyles: string
 	text?: string
+	interactive?: boolean
 	onTextChanged: (text: string) => void
 }
 
@@ -13,6 +14,7 @@ export default function EditText({
 	fontStyles,
 	text = 'Click to edit',
 	onTextChanged,
+	interactive = true,
 	...props
 }: Props) {
 	const [editMode, setEditMode] = useState(false)
@@ -29,8 +31,8 @@ export default function EditText({
 	}, [onTextChanged, inputValue])
 
 	const onTextClicked = useCallback(() => {
-		setEditMode(true)
-	}, [])
+		if (interactive) setEditMode(true)
+	}, [interactive])
 
 	const onInputChanged = useCallback((ev: ChangeEvent<HTMLInputElement>) => {
 		setInputValue(ev.currentTarget.value)
@@ -52,7 +54,7 @@ export default function EditText({
 					type="text"
 					onChange={onInputChanged}
 					onBlur={onInputBlurred}
-					className={`${fontStyles} w-full overflow-hidden rounded-md focus-visible:bg-amber-100 focus-visible:outline-none`}
+					className={`${fontStyles} w-full rounded-md focus-visible:bg-amber-100 focus-visible:outline-none`}
 					value={inputValue}
 					ref={element}
 					onKeyDown={onKeyDown}
@@ -60,7 +62,7 @@ export default function EditText({
 				/>
 			) : (
 				<p
-					className={`${fontStyles} overflow-hidden rounded-md transition-all duration-300 hover:bg-amber-100`}
+					className={`${fontStyles} overflow-hidden overflow-ellipsis whitespace-nowrap rounded-md transition-all duration-300 hover:bg-amber-100`}
 					onClick={onTextClicked}
 					data-testid="edit-text-p"
 				>

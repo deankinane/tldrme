@@ -1,9 +1,8 @@
-import { useCallback, useContext, useRef, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import React from 'react'
 import SectionTitle from '@/modules/editor/components/section/section_title'
 import type { SectionModel } from '@/utils/common/types'
 import AddElementButton from '../add-element-button/add-element-button'
-import { v4 as uuidv4 } from 'uuid'
 import { trpc } from '@/utils/trpc'
 import type { Element, ElementType } from '@prisma/client'
 import BaseElement from '../elements/base-element'
@@ -95,7 +94,7 @@ export default function Section({
 	)
 
 	return (
-		<div className={`${dragged ? 'opacity-60' : ''}`} ref={animateRef}>
+		<div className={`${dragged ? 'opacity-60' : ''} max-w-full`}>
 			<SectionTitle
 				text={model.title}
 				onTextChanged={onTextChanged}
@@ -103,22 +102,23 @@ export default function Section({
 				onDragStart={dragStart}
 				onDragEnd={dragEnd}
 			/>
-
-			{model.elements
-				.sort((a, b) => a.order - b.order)
-				.map((e) => {
-					return (
-						<BaseElement
-							key={e.id}
-							element={e}
-							onElementUpdated={onElementUpdated}
-						/>
-					)
-				})}
-			<AddElementButton
-				onAddElementClicked={onAddElementClicked}
-				isLoading={mAddElement.isLoading}
-			/>
+			<div ref={animateRef}>
+				{model.elements
+					.sort((a, b) => a.order - b.order)
+					.map((e) => {
+						return (
+							<BaseElement
+								key={e.id}
+								element={e}
+								onElementUpdated={onElementUpdated}
+							/>
+						)
+					})}
+				<AddElementButton
+					onAddElementClicked={onAddElementClicked}
+					isLoading={mAddElement.isLoading}
+				/>
+			</div>
 		</div>
 	)
 }

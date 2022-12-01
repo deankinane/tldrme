@@ -1,9 +1,29 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import ElementTypeButton from './element-type-button'
 import { ElementType } from '@prisma/client'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import Spinner from '@/modules/common/components/spinner'
+
+const buttonList = [
+	{
+		text: 'Subtitle',
+		type: ElementType.SubTitle,
+	},
+	{
+		text: 'Icon Text',
+		type: ElementType.IconText,
+	},
+	{
+		text: 'Bullet Text',
+		type: ElementType.BulletText,
+	},
+	{
+		text: 'Text',
+		type: ElementType.Text,
+	},
+]
+
 interface Props {
 	onAddElementClicked: (type: ElementType) => void
 	isLoading: boolean
@@ -24,41 +44,17 @@ export default function AddElementButton({
 		setMenuOpen(!menuOpen)
 	}, [menuOpen])
 
-	const onAddSubtitleClick = useCallback(() => {
-		setMenuOpen(false)
-		onAddElementClicked(ElementType.SubTitle)
-	}, [onAddElementClicked])
+	const onAddButtonClick = useCallback(
+		(type: ElementType) => {
+			setMenuOpen(false)
+			onAddElementClicked(type)
+		},
+		[onAddElementClicked]
+	)
 
 	const onButtonBlur = useCallback(() => {
-		// setMenuOpen(false)
+		setTimeout(() => setMenuOpen(false), 100)
 	}, [])
-
-	const buttonList = useMemo(() => {
-		return [
-			{
-				text: 'Subtitle',
-				onClick: onAddSubtitleClick,
-			},
-			{
-				text: 'Icon Text',
-				onClick: () => {
-					return
-				},
-			},
-			{
-				text: 'Bullet Text',
-				onClick: () => {
-					return
-				},
-			},
-			{
-				text: 'Text',
-				onClick: () => {
-					return
-				},
-			},
-		]
-	}, [onAddSubtitleClick])
 
 	return (
 		<div className="m-2 mb-4 flex">
@@ -66,7 +62,7 @@ export default function AddElementButton({
 				className="mr-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-800 p-2 font-bold text-white transition-all hover:bg-purple-600 focus:rotate-45"
 				onClick={onToggleClick}
 				onBlur={onButtonBlur}
-				data-testid="add-element-button"
+				data-testid="show-options-button"
 				ref={buttonRef}
 			>
 				{isLoading ? <Spinner /> : <PlusIcon />}
@@ -74,7 +70,11 @@ export default function AddElementButton({
 			<div ref={animateRef} className="grow">
 				{menuOpen ? (
 					buttonList.map((b) => (
-						<ElementTypeButton key={b.text} onClick={b.onClick}>
+						<ElementTypeButton
+							key={b.text}
+							onClick={() => onAddButtonClick(b.type)}
+							data-testid={`add-element-button-${b.type}`}
+						>
 							{b.text}
 						</ElementTypeButton>
 					))
