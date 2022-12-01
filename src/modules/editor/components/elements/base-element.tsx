@@ -1,6 +1,7 @@
 import { trpc } from '@/utils/trpc'
 import type { Element } from '@prisma/client'
 import React, { useCallback } from 'react'
+import IconTextElement from './icon-text/icon-text'
 import SubTitleElement from './subtitle-element/subtitle-element'
 interface Props {
 	element: Element
@@ -28,6 +29,15 @@ export default function BaseElement({ element, onElementUpdated }: Props) {
 		<div draggable>
 			{element.type === 'SubTitle' ? (
 				<SubTitleElement
+					element={element}
+					onElementUpdated={updateElement}
+				/>
+			) : (
+				<></>
+			)}
+
+			{element.type === 'IconText' ? (
+				<IconTextElement
 					element={element}
 					onElementUpdated={updateElement}
 				/>

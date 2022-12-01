@@ -69,25 +69,21 @@ export default function Section({
 		[mUpdateSectionTitle, model, onModelUpdated]
 	)
 
-	const addSubtitle = useCallback(() => {
-		let order = 0
-		model.elements.forEach(
-			(e) => (order = e.order > order ? e.order : order)
-		)
-		order++
-
-		mAddElement.mutate({
-			sectionId: model.id,
-			order: order,
-			type: 'SubTitle',
-		})
-	}, [mAddElement, model])
-
 	const onAddElementClicked = useCallback(
 		(type: ElementType) => {
-			if (type === 'SubTitle') addSubtitle()
+			let order = 0
+			model.elements.forEach(
+				(e) => (order = e.order > order ? e.order : order)
+			)
+			order++
+
+			mAddElement.mutate({
+				sectionId: model.id,
+				order: order,
+				type: type,
+			})
 		},
-		[addSubtitle]
+		[mAddElement, model.elements, model.id]
 	)
 
 	const onElementUpdated = useCallback(

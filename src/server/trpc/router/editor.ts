@@ -109,7 +109,7 @@ export const editorRouter = router({
 					order: input.order,
 					type: input.type,
 					text: 'New Element',
-					icon: input.type === 'IconText' ? 'check' : '',
+					icon: input.type === 'IconText' ? 'Documenticon' : '',
 				},
 			})
 		}),

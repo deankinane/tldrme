@@ -7,6 +7,7 @@ interface Props extends React.ComponentProps<'div'> {
 	fontStyles: string
 	text?: string
 	interactive?: boolean
+	multiline?: boolean
 	onTextChanged: (text: string) => void
 }
 
@@ -15,11 +16,13 @@ export default function EditText({
 	text = 'Click to edit',
 	onTextChanged,
 	interactive = true,
+	multiline = false,
 	...props
 }: Props) {
 	const [editMode, setEditMode] = useState(false)
 	const [inputValue, setInputValue] = useState(text)
 	const element = useRef<HTMLInputElement>(null)
+	const [rows, setRows] = useState(1)
 
 	useEffect(() => {
 		if (element.current) element.current.focus()

@@ -57,7 +57,7 @@ export default function AddElementButton({
 	}, [])
 
 	return (
-		<div className="m-2 mb-4 flex">
+		<div className="ml-2 mt-4 mb-4 flex">
 			<button
 				className="mr-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-800 p-2 font-bold text-white transition-all hover:bg-purple-600 focus:rotate-45"
 				onClick={onToggleClick}
