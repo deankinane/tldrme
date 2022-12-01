@@ -20,7 +20,7 @@ export default function Editor({ resume }: Props) {
 				<div
 					className={`flex w-full ${
 						smallScreen
-							? 'fixed top-48 bottom-0 right-0 left-0 snap-x snap-mandatory overflow-x-auto'
+							? 'fixed top-52 bottom-0 right-0 left-0 snap-x snap-mandatory overflow-x-auto'
 							: 'flex-row'
 					}`}
 				>

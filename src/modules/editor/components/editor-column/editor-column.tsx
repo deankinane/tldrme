@@ -1,16 +1,9 @@
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import AddSectionButton from '@/modules/editor/components/add-section-button/add_section_button'
 import Section from '@/modules/editor/components/section/section'
 import DropTarget from '@/modules/editor/components/section/drop-target'
 import { type SectionModel } from '@/utils/common/types'
 import { trpc } from '@/utils/trpc'
-import { v4 as uuid } from 'uuid'
 import { ResumeContext } from '../../utils/resumeContext'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 interface Props {
@@ -20,7 +13,7 @@ interface Props {
 export default function EditorColumn({ columnIndex }: Props) {
 	const { resume, updateResume } = useContext(ResumeContext)
 	const [sections, setSections] = useState<SectionModel[]>([])
-	const newQueue = useRef<string[]>([])
+	const [animateRef] = useAutoAnimate<HTMLDivElement>()
 
 	useEffect(() => {
 		setSections(
@@ -28,46 +21,25 @@ export default function EditorColumn({ columnIndex }: Props) {
 		)
 	}, [columnIndex, resume.sections])
 
-	const [animateRef] = useAutoAnimate<HTMLDivElement>()
-
 	const mAddSection = trpc.editor.addSection.useMutation({
 		onSuccess: (d) => {
 			if (!d) return
-			const mergeId =
-				newQueue.current.length > 0
-					? newQueue.current.splice(0, 1)[0]
-					: undefined
-
-			if (mergeId) {
-				resume.sections.forEach(
-					(s) => (s.id = s.id === mergeId ? d.id : s.id)
-				)
-				updateResume(resume)
-			}
+			resume.sections = [...resume.sections, { ...d, elements: [] }]
+			updateResume(resume)
 		},
 	})
 
 	const onAddSectionClicked = useCallback(() => {
-		const newSection: SectionModel = {
-			resumeId: resume.id,
-			columnIndex,
-			order: sections.length,
-			title: 'New Section',
-			elements: [],
-			id: uuid(),
-		}
-
-		newQueue.current.push(newSection.id)
-
-		resume.sections = [...resume.sections, newSection]
-		updateResume(resume)
+		let order = 0
+		sections.forEach((s) => (order = s.order > order ? s.order : order))
+		order++
 
 		mAddSection.mutate({
 			resumeId: resume.id,
 			columnIndex,
-			order: newSection.order,
+			order: order,
 		})
-	}, [columnIndex, mAddSection, resume, sections.length, updateResume])
+	}, [columnIndex, mAddSection, resume, sections])
 
 	const onUpdateSection = useCallback((s: SectionModel) => {
 		setSections((secs) => {
@@ -80,18 +52,23 @@ export default function EditorColumn({ columnIndex }: Props) {
 
 	return (
 		<div ref={animateRef}>
-			{sections.map((s, i) => (
-				<div key={s.id}>
-					<DropTarget index={i} columnIndex={columnIndex} />
-					<Section
-						index={i}
-						model={s}
-						onModelUpdated={onUpdateSection}
-					></Section>
-				</div>
-			))}
+			{sections
+				.sort((a, b) => a.order - b.order)
+				.map((s, i) => (
+					<div key={s.id}>
+						<DropTarget index={i} columnIndex={columnIndex} />
+						<Section
+							index={i}
+							model={s}
+							onModelUpdated={onUpdateSection}
+						></Section>
+					</div>
+				))}
 			<DropTarget index={sections.length} columnIndex={columnIndex} />
-			<AddSectionButton onAddSectionClicked={onAddSectionClicked} />
+			<AddSectionButton
+				onAddSectionClicked={onAddSectionClicked}
+				isLoading={mAddSection.isLoading}
+			/>
 		</div>
 	)
 }

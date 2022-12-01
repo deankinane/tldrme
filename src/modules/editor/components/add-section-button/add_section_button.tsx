@@ -1,17 +1,32 @@
+import Spinner from '@/modules/common/components/spinner'
+import { PlusCircleIcon } from '@heroicons/react/24/solid'
 import React from 'react'
 
 interface Props {
 	onAddSectionClicked: () => void
+	isLoading: boolean
 }
 
-export default function AddSectionButton({ onAddSectionClicked }: Props) {
+export default function AddSectionButton({
+	onAddSectionClicked,
+	isLoading,
+}: Props) {
 	return (
-		<div
-			className="grid cursor-pointer select-none items-center justify-center border border-dashed border-gray-500 bg-slate-200 p-8"
+		<button
+			className="mb-8 flex w-full items-center justify-center rounded-md border border-dashed border-purple-500 bg-purple-200 p-8 font-bold text-purple-900 transition-all hover:bg-purple-300"
 			onClick={onAddSectionClicked}
 			data-testid="add-section-button"
 		>
-			<p>Add Section</p>
-		</div>
+			{isLoading ? (
+				<>
+					<Spinner className="h-6 w-6" />
+				</>
+			) : (
+				<>
+					<PlusCircleIcon className="mr-2 w-6" />
+					Add Section
+				</>
+			)}
+		</button>
 	)
 }

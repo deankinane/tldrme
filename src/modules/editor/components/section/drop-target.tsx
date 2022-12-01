@@ -95,8 +95,8 @@ export default function DropTarget({ index, columnIndex }: Props) {
 			onDrop={onDrop}
 			onDragOver={onDragOver}
 			className={`mx-2 h-8 bg-green-300 opacity-0 transition-all ${
-				dragHover ? 'mb-4 h-16 opacity-100' : ''
-			}`}
+				dragHover ? 'h-28 opacity-100' : ''
+			} mb-4`}
 		></div>
 	)
 }

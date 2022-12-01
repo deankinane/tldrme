@@ -8,6 +8,7 @@ import { trpc } from '@/utils/trpc'
 import type { Element, ElementType } from '@prisma/client'
 import BaseElement from '../elements/base-element'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 interface Props {
 	index: number
@@ -22,24 +23,15 @@ export default function Section({
 }: Props) {
 	const [dragged, setDragged] = useState(false)
 	const [model] = useState(pModel)
-	const newQueue = useRef<string[]>([])
 	const { setDragData, endDrag } = useContext(DraggableContext)
+	const [animateRef] = useAutoAnimate<HTMLDivElement>()
 
 	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
 	const mAddElement = trpc.editor.addElement.useMutation({
 		onSuccess: (d) => {
 			if (!d) return
-			const mergeId =
-				newQueue.current.length > 0
-					? newQueue.current.splice(0, 1)[0]
-					: undefined
-
-			if (mergeId) {
-				model.elements.forEach(
-					(e) => (e.id = e.id === mergeId ? d.id : e.id)
-				)
-				onModelUpdated(model)
-			}
+			model.elements = [...model.elements, d]
+			onModelUpdated(model)
 		},
 	})
 	const dragStart = useCallback(() => {
@@ -73,25 +65,18 @@ export default function Section({
 	)
 
 	const addSubtitle = useCallback(() => {
-		const newEl: Element = {
-			id: uuidv4(),
-			order: model.elements.length,
-			type: 'SubTitle',
-			sectionId: model.id,
-			text: 'Subtitle',
-			icon: '',
-		}
+		let order = 0
+		model.elements.forEach(
+			(e) => (order = e.order > order ? e.order : order)
+		)
+		order++
 
-		newQueue.current.push(newEl.id)
-
-		model.elements.push(newEl)
-		onModelUpdated(model)
 		mAddElement.mutate({
 			sectionId: model.id,
-			order: model.elements.length,
+			order: order,
 			type: 'SubTitle',
 		})
-	}, [mAddElement, model, onModelUpdated])
+	}, [mAddElement, model])
 
 	const onAddElementClicked = useCallback(
 		(type: ElementType) => {
@@ -110,7 +95,7 @@ export default function Section({
 	)
 
 	return (
-		<div className={`${dragged ? 'opacity-60' : ''}`}>
+		<div className={`${dragged ? 'opacity-60' : ''}`} ref={animateRef}>
 			<SectionTitle
 				text={model.title}
 				onTextChanged={onTextChanged}
@@ -119,16 +104,21 @@ export default function Section({
 				onDragEnd={dragEnd}
 			/>
 
-			{model.elements.map((e) => {
-				return (
-					<BaseElement
-						key={e.id}
-						element={e}
-						onElementUpdated={onElementUpdated}
-					/>
-				)
-			})}
-			<AddElementButton onAddElementClicked={onAddElementClicked} />
+			{model.elements
+				.sort((a, b) => a.order - b.order)
+				.map((e) => {
+					return (
+						<BaseElement
+							key={e.id}
+							element={e}
+							onElementUpdated={onElementUpdated}
+						/>
+					)
+				})}
+			<AddElementButton
+				onAddElementClicked={onAddElementClicked}
+				isLoading={mAddElement.isLoading}
+			/>
 		</div>
 	)
 }
