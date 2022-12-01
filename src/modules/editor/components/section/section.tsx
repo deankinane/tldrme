@@ -8,6 +8,8 @@ import type { Element, ElementType } from '@prisma/client'
 import BaseElement from '../elements/base-element'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { ResumeContext } from '../../utils/resumeContext'
+import reorderSections from '../../utils/reorder-sections'
 
 interface Props {
 	index: number
@@ -24,6 +26,7 @@ export default function Section({
 	const [model] = useState(pModel)
 	const { setDragData, endDrag } = useContext(DraggableContext)
 	const [animateRef] = useAutoAnimate<HTMLDivElement>()
+	const { resume, updateResume } = useContext(ResumeContext)
 
 	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
 	const mAddElement = trpc.editor.addElement.useMutation({
@@ -33,6 +36,9 @@ export default function Section({
 			onModelUpdated(model)
 		},
 	})
+	const mRemoveSection = trpc.editor.removeSection.useMutation()
+	const mReorderSections = trpc.editor.reorderSection.useMutation()
+
 	const dragStart = useCallback(() => {
 		setDragData({
 			itemInDrag: true,
@@ -93,14 +99,64 @@ export default function Section({
 		[model, onModelUpdated]
 	)
 
+	const onRemoveClicked = useCallback(() => {
+		mRemoveSection.mutate({
+			sectionId: model.id,
+		})
+		resume.sections = resume.sections.filter((s) => s.id !== model.id)
+		updateResume(resume)
+	}, [mRemoveSection, model.id, resume, updateResume])
+
+	const moveItem = useCallback(
+		(newIndex: number) => {
+			const columnSections = resume.sections.filter(
+				(s) => s.columnIndex === model.columnIndex
+			)
+
+			const newOrder = reorderSections(columnSections, index, newIndex)
+			resume.sections = [
+				...resume.sections.filter(
+					(s) => s.columnIndex !== model.columnIndex
+				),
+				...newOrder,
+			]
+			updateResume(resume)
+			mReorderSections.mutate(
+				newOrder.map((s) => {
+					return { sectionId: s.id, newOrder: s.order }
+				})
+			)
+		},
+
+		[index, mReorderSections, model.columnIndex, resume, updateResume]
+	)
+
+	const onMoveUpClicked = useCallback(() => {
+		if (index === 0) return
+
+		moveItem(index - 1)
+	}, [index, moveItem])
+
+	const onMoveDownClicked = useCallback(() => {
+		const count = resume.sections.filter(
+			(s) => s.columnIndex === model.columnIndex
+		).length
+		if (index === count - 1) return
+
+		moveItem(index + 2) // +2 to target the index of the drop zone below the next section
+	}, [index, model.columnIndex, moveItem, resume.sections])
+
 	return (
-		<div className={`${dragged ? 'opacity-60' : ''} max-w-full`}>
+		<div className={`${dragged ? 'opacity-60' : ''}`}>
 			<SectionTitle
 				text={model.title}
 				onTextChanged={onTextChanged}
 				draggable={true}
 				onDragStart={dragStart}
 				onDragEnd={dragEnd}
+				onRemoveClicked={onRemoveClicked}
+				onMoveUpClicked={onMoveUpClicked}
+				onMoveDownClicked={onMoveDownClicked}
 			/>
 			<div ref={animateRef}>
 				{model.elements

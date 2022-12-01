@@ -62,7 +62,7 @@ export default function EditText({
 				/>
 			) : (
 				<p
-					className={`${fontStyles} overflow-hidden overflow-ellipsis whitespace-nowrap rounded-md transition-all duration-300 hover:bg-amber-100`}
+					className={`${fontStyles} rounded-md transition-all duration-300 hover:bg-amber-100`}
 					onClick={onTextClicked}
 					data-testid="edit-text-p"
 				>

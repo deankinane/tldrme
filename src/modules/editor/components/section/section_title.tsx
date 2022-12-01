@@ -1,27 +1,37 @@
 import React, { useCallback, useRef, useState } from 'react'
 import EditText from '../edit-text/edit-text'
-import { useSmallScreen } from '@/utils/hooks/useMediaQuery'
 import {
-	ArrowDownIcon,
-	ArrowUpIcon,
+	ChevronDownIcon,
+	ChevronUpIcon,
 	TrashIcon,
 } from '@heroicons/react/24/solid'
+import MobileActionButton from './mobile-action-button'
+import { isMobile } from 'react-device-detect'
 
 interface Props extends React.HTMLAttributes<HTMLElement> {
 	text: string
 	onTextChanged: (text: string) => void
+	onRemoveClicked: () => void
+	onMoveUpClicked: () => void
+	onMoveDownClicked: () => void
 }
-export default function SectionTitle({ text, onTextChanged, ...props }: Props) {
-	const smallScreen = useSmallScreen()
+export default function SectionTitle({
+	text,
+	onTextChanged,
+	onRemoveClicked,
+	onMoveUpClicked,
+	onMoveDownClicked,
+	...props
+}: Props) {
 	const [selected, setSelected] = useState(false)
 	const timer = useRef<NodeJS.Timeout>()
 
 	const onCommit = useCallback(
-		(text: string) => {
+		(newText: string) => {
 			setSelected(false)
-			onTextChanged(text)
+			if (newText !== text) onTextChanged(newText)
 		},
-		[onTextChanged]
+		[onTextChanged, text]
 	)
 
 	const onSelect = useCallback(() => {
@@ -37,7 +47,7 @@ export default function SectionTitle({ text, onTextChanged, ...props }: Props) {
 		}
 	}, [])
 
-	return smallScreen && !selected ? (
+	return isMobile && !selected ? (
 		<p
 			className={`p-2 text-xl font-medium text-purple-800 lg:text-3xl`}
 			onClick={onSelect}
@@ -46,33 +56,37 @@ export default function SectionTitle({ text, onTextChanged, ...props }: Props) {
 			{text}
 		</p>
 	) : (
-		<div className="flex max-w-full">
+		<div className="">
 			<EditText
 				fontStyles="text-xl lg:text-3xl font-medium text-purple-800 p-2"
 				text={text}
 				onTextChanged={onCommit}
-				interactive={!smallScreen || selected}
-				className="shrink grow"
+				interactive={!isMobile || selected}
+				className={`${selected ? 'rounded-lg bg-purple-100' : ''}`}
 				onClick={onClickEditText}
 				{...props}
 			/>
-			<div className="flex w-fit shrink-0 items-center">
-				{selected ? (
-					<div>
-						<button className="ml-2 h-8 w-8 rounded-full bg-slate-400 p-2">
-							<TrashIcon />
-						</button>
-						<button className="ml-2 h-8 w-8 rounded-full bg-slate-400 p-2">
-							<ArrowUpIcon />
-						</button>
-						<button className="ml-2 h-8 w-8 rounded-full bg-slate-400 p-2">
-							<ArrowDownIcon />
-						</button>
-					</div>
-				) : (
-					<></>
-				)}
-			</div>
+			{isMobile ? (
+				<div className="absolute right-0 z-50 mt-2 flex flex-col rounded-full border border-purple-200 bg-purple-200 p-2 pb-0 shadow-md">
+					{selected ? (
+						<>
+							<MobileActionButton onClick={onMoveUpClicked}>
+								<ChevronUpIcon />
+							</MobileActionButton>
+							<MobileActionButton onClick={onMoveDownClicked}>
+								<ChevronDownIcon />
+							</MobileActionButton>
+							<MobileActionButton onClick={onRemoveClicked}>
+								<TrashIcon />
+							</MobileActionButton>
+						</>
+					) : (
+						<></>
+					)}
+				</div>
+			) : (
+				<></>
+			)}
 		</div>
 	)
 }
