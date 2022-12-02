@@ -25,8 +25,8 @@ export default function Editor({ resume }: Props) {
 					}`}
 				>
 					<div
-						className={`w-full overflow-y-scroll px-4 md:w-80 md:overflow-y-visible md:px-0 lg:w-96 ${
-							smallScreen ? 'shrink-0 snap-center' : ''
+						className={`w-full shrink-0 overflow-y-scroll px-4 md:w-80 md:overflow-y-visible md:px-0 lg:w-96 ${
+							smallScreen ? 'snap-center' : ''
 						}`}
 					>
 						<EditorColumn columnIndex={0} />

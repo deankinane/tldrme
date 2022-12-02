@@ -21,11 +21,12 @@ export default function EditText({
 }: Props) {
 	const [editMode, setEditMode] = useState(false)
 	const [inputValue, setInputValue] = useState(text)
-	const element = useRef<HTMLInputElement>(null)
-	const [rows, setRows] = useState(1)
+	const textAreaElement = useRef<HTMLTextAreaElement>(null)
+	const textInputElement = useRef<HTMLInputElement>(null)
 
 	useEffect(() => {
-		if (element.current) element.current.focus()
+		if (textAreaElement.current) textAreaElement.current.focus()
+		if (textInputElement.current) textInputElement.current.focus()
 	}, [editMode])
 
 	const onInputBlurred = useCallback(() => {
@@ -37,12 +38,23 @@ export default function EditText({
 		if (interactive) setEditMode(true)
 	}, [interactive])
 
-	const onInputChanged = useCallback((ev: ChangeEvent<HTMLInputElement>) => {
-		setInputValue(ev.currentTarget.value)
+	const onFocus = useCallback(() => {
+		setTextAreaHeight(textAreaElement)
 	}, [])
 
+	const onInputChanged = useCallback(
+		(ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+			setInputValue(ev.currentTarget.value)
+
+			if (multiline) {
+				setTextAreaHeight(textAreaElement)
+			}
+		},
+		[multiline]
+	)
+
 	const onKeyDown = useCallback(
-		(ev: React.KeyboardEvent<HTMLInputElement>) => {
+		(ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 			if (ev.key === 'Enter') {
 				onInputBlurred()
 			}
@@ -53,19 +65,32 @@ export default function EditText({
 	return (
 		<div {...props} data-testid="edit-text-wrapper">
 			{editMode ? (
-				<input
-					type="text"
-					onChange={onInputChanged}
-					onBlur={onInputBlurred}
-					className={`${fontStyles} w-full rounded-md focus-visible:bg-amber-100 focus-visible:outline-none`}
-					value={inputValue}
-					ref={element}
-					onKeyDown={onKeyDown}
-					data-testid="edit-text-input"
-				/>
+				multiline ? (
+					<textarea
+						onChange={onInputChanged}
+						onFocus={onFocus}
+						onBlur={onInputBlurred}
+						className={`${fontStyles} w-full overflow-hidden rounded-md focus-visible:bg-amber-100 focus-visible:outline-none`}
+						value={inputValue}
+						ref={textAreaElement}
+						onKeyDown={onKeyDown}
+						data-testid="edit-text-input"
+					/>
+				) : (
+					<input
+						type="text"
+						onChange={onInputChanged}
+						onBlur={onInputBlurred}
+						className={`${fontStyles} w-full rounded-md focus-visible:bg-amber-100 focus-visible:outline-none`}
+						value={inputValue}
+						ref={textInputElement}
+						onKeyDown={onKeyDown}
+						data-testid="edit-text-input"
+					/>
+				)
 			) : (
 				<p
-					className={`${fontStyles} rounded-md transition-all duration-300 hover:bg-amber-100`}
+					className={`${fontStyles} min-h-full w-full rounded-md transition-all duration-300 hover:bg-amber-100`}
 					onClick={onTextClicked}
 					data-testid="edit-text-p"
 				>
@@ -73,5 +98,15 @@ export default function EditText({
 				</p>
 			)}
 		</div>
+	)
+}
+
+function setTextAreaHeight(
+	textAreaElement: React.RefObject<HTMLTextAreaElement>
+) {
+	textAreaElement.current?.setAttribute('style', `height: 0px`)
+	textAreaElement.current?.setAttribute(
+		'style',
+		`height: ${Math.max(textAreaElement.current?.scrollHeight, 24)}px`
 	)
 }

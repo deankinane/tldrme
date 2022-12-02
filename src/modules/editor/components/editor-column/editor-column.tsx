@@ -1,11 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import AddSectionButton from '@/modules/editor/components/add-section-button/add_section_button'
 import Section from '@/modules/editor/components/section/section'
-import DropTarget from '@/modules/editor/components/section/drop-target'
 import { type SectionModel } from '@/utils/common/types'
 import { trpc } from '@/utils/trpc'
 import { ResumeContext } from '../../utils/resumeContext'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { DraggableContext, DraggableType } from '../../utils/draggableContext'
+import reorderSections from '../../utils/reorder-sections'
 interface Props {
 	columnIndex: number
 }
@@ -14,6 +15,7 @@ export default function EditorColumn({ columnIndex }: Props) {
 	const { resume, updateResume } = useContext(ResumeContext)
 	const [sections, setSections] = useState<SectionModel[]>([])
 	const [animateRef] = useAutoAnimate<HTMLDivElement>()
+	const { dragData } = useContext(DraggableContext)
 
 	useEffect(() => {
 		setSections(
@@ -28,6 +30,7 @@ export default function EditorColumn({ columnIndex }: Props) {
 			updateResume(resume)
 		},
 	})
+	const mReorderSections = trpc.editor.reorderSection.useMutation()
 
 	const onAddSectionClicked = useCallback(() => {
 		let order = 0
@@ -50,21 +53,73 @@ export default function EditorColumn({ columnIndex }: Props) {
 		return
 	}, [])
 
+	const validSource = useCallback(
+		(targetIndex: number) => {
+			return (
+				dragData.itemType === DraggableType.SECTION &&
+				dragData.columnIndex === columnIndex &&
+				(targetIndex > dragData.itemIndex ||
+					Math.abs(dragData.itemIndex - targetIndex) > 1)
+			)
+		},
+		[
+			columnIndex,
+			dragData.columnIndex,
+			dragData.itemIndex,
+			dragData.itemType,
+		]
+	)
+
+	const onSectionDropped = useCallback(
+		(droppedIndex: number) => {
+			const columnSections = resume.sections.filter(
+				(s) => s.columnIndex === columnIndex
+			)
+			const draggedItemIndex = columnSections.findIndex(
+				(x) => x.id == dragData.sectionId
+			)
+			const newOrder = reorderSections(
+				columnSections,
+				draggedItemIndex,
+				droppedIndex
+			) as SectionModel[]
+
+			resume.sections = [
+				...resume.sections.filter((s) => s.columnIndex !== columnIndex),
+				...newOrder,
+			]
+			updateResume(resume)
+			mReorderSections.mutate(
+				newOrder.map((s) => {
+					return { sectionId: s.id, newOrder: s.order }
+				})
+			)
+		},
+
+		[
+			columnIndex,
+			dragData.sectionId,
+			mReorderSections,
+			resume,
+			updateResume,
+		]
+	)
+
 	return (
 		<div ref={animateRef}>
 			{sections
 				.sort((a, b) => a.order - b.order)
 				.map((s, i) => (
-					<div key={s.id}>
-						<DropTarget index={i} columnIndex={columnIndex} />
-						<Section
-							index={i}
-							model={s}
-							onModelUpdated={onUpdateSection}
-						></Section>
-					</div>
+					<Section
+						key={s.id}
+						index={i}
+						model={s}
+						onModelUpdated={onUpdateSection}
+						isValidSource={validSource}
+						onItemDropped={onSectionDropped}
+					></Section>
 				))}
-			<DropTarget index={sections.length} columnIndex={columnIndex} />
+
 			<AddSectionButton
 				onAddSectionClicked={onAddSectionClicked}
 				isLoading={mAddSection.isLoading}

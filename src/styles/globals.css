@@ -14,3 +14,7 @@ body,
 input {
 	letter-spacing: 1px;
 }
+
+textarea {
+	letter-spacing: 1px;
+}

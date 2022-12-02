@@ -145,4 +145,24 @@ export const editorRouter = router({
 				},
 			})
 		}),
+	reorderElement: publicProcedure
+		.input(
+			z.array(
+				z.object({
+					elementId: z.string(),
+					newOrder: z.number(),
+				})
+			)
+		)
+		.mutation(async ({ input }) => {
+			for (let i = 0; i < input.length; i++) {
+				const s = input[i]
+				if (s) {
+					await prisma?.element.update({
+						where: { id: s.elementId },
+						data: { order: s.newOrder },
+					})
+				}
+			}
+		}),
 })

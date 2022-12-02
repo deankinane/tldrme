@@ -1,13 +1,20 @@
+import { withDropTarget } from '@/modules/common/components/withDropTarget'
 import { trpc } from '@/utils/trpc'
 import type { Element } from '@prisma/client'
-import React, { useCallback } from 'react'
+import { useCallback, useContext, useState } from 'react'
+import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 import IconTextElement from './icon-text/icon-text'
 import SubTitleElement from './subtitle-element/subtitle-element'
+
 interface Props {
 	element: Element
 	onElementUpdated: (element: Element) => void
+	index: number
 }
-export default function BaseElement({ element, onElementUpdated }: Props) {
+function BaseElement({ element, onElementUpdated, index }: Props) {
+	const { setDragData, endDrag } = useContext(DraggableContext)
+	const [dragged, setDragged] = useState(false)
+
 	const mUpdateElement = trpc.editor.updateElement.useMutation()
 
 	const updateElement = useCallback(
@@ -22,11 +29,30 @@ export default function BaseElement({ element, onElementUpdated }: Props) {
 		[mUpdateElement, onElementUpdated]
 	)
 
-	// const dragStart = useCallback((ev: React.DragEvent<HTMLDivElement>) => {},
-	// [])
+	const dragStart = useCallback(() => {
+		setDragData({
+			itemInDrag: true,
+			itemType: DraggableType.ELEMENT,
+			elementId: element.id,
+			sectionId: element.sectionId,
+			columnIndex: 0,
+			itemIndex: index,
+		})
+		setDragged(true)
+	}, [element.id, element.sectionId, index, setDragData])
+
+	const dragEnd = useCallback(() => {
+		setDragged(false)
+		endDrag()
+	}, [endDrag])
 
 	return (
-		<div draggable>
+		<div
+			draggable
+			onDragStart={dragStart}
+			onDragEnd={dragEnd}
+			className={`${dragged ? 'opacity-60' : ''}`}
+		>
 			{element.type === 'SubTitle' ? (
 				<SubTitleElement
 					element={element}
@@ -47,3 +73,5 @@ export default function BaseElement({ element, onElementUpdated }: Props) {
 		</div>
 	)
 }
+
+export default withDropTarget(BaseElement)

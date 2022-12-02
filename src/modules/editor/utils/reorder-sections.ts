@@ -1,11 +1,13 @@
-import type { SectionModel } from '@/utils/common/types'
+export interface IOrderable {
+	order: number
+}
 
-export default function reorderSections(
-	sections: SectionModel[],
+export default function reorderSections<T extends IOrderable>(
+	sections: T[],
 	startPosition: number,
 	newPosition: number
-): SectionModel[] {
-	newPosition = startPosition < newPosition ? newPosition - 1 : newPosition
+): IOrderable[] {
+	newPosition = newPosition < startPosition ? newPosition + 1 : newPosition
 	const newOrder = [...sections]
 	const sectionMoving = newOrder.splice(startPosition, 1)[0]
 	if (sectionMoving) {

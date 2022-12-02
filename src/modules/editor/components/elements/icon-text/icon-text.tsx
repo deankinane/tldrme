@@ -25,15 +25,16 @@ export default function IconTextElement({
 			className="mb-2 flex"
 			data-testid={`element-${ElementType.IconText}`}
 		>
-			<div>
+			<div className="mt-1">
 				<Icon className="mx-2 w-6" />
 			</div>
 
 			<EditText
-				fontStyles="lg:text-lg"
+				fontStyles="text-sm lg:text-lg"
 				onTextChanged={onTextChanged}
 				text={element.text}
 				className="grow"
+				multiline
 			/>
 		</div>
 	)

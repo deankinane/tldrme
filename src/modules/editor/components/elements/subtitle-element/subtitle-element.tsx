@@ -18,7 +18,7 @@ export default function SubTitleElement({
 	return (
 		<div data-testid={`element-${ElementType.SubTitle}`}>
 			<EditText
-				fontStyles="text-lg lg:text-xl px-2 pb-1 mb-2"
+				fontStyles="text-md lg:text-xl p-2 mt-2 font-semibold"
 				onTextChanged={onTextChanged}
 				text={element.text}
 			/>

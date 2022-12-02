@@ -10,6 +10,7 @@ import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { ResumeContext } from '../../utils/resumeContext'
 import reorderSections from '../../utils/reorder-sections'
+import { withDropTarget } from '@/modules/common/components/withDropTarget'
 
 interface Props {
 	index: number
@@ -17,14 +18,10 @@ interface Props {
 	onModelUpdated: (model: SectionModel) => void
 }
 
-export default function Section({
-	index,
-	model: pModel,
-	onModelUpdated,
-}: Props) {
+function Section({ index, model: pModel, onModelUpdated }: Props) {
 	const [dragged, setDragged] = useState(false)
 	const [model] = useState(pModel)
-	const { setDragData, endDrag } = useContext(DraggableContext)
+	const { dragData, setDragData, endDrag } = useContext(DraggableContext)
 	const [animateRef] = useAutoAnimate<HTMLDivElement>()
 	const { resume, updateResume } = useContext(ResumeContext)
 
@@ -38,6 +35,7 @@ export default function Section({
 	})
 	const mRemoveSection = trpc.editor.removeSection.useMutation()
 	const mReorderSections = trpc.editor.reorderSection.useMutation()
+	const mReorderElements = trpc.editor.reorderElement.useMutation()
 
 	const dragStart = useCallback(() => {
 		setDragData({
@@ -109,7 +107,11 @@ export default function Section({
 				(s) => s.columnIndex === model.columnIndex
 			)
 
-			const newOrder = reorderSections(columnSections, index, newIndex)
+			const newOrder = reorderSections<SectionModel>(
+				columnSections,
+				index,
+				newIndex
+			) as SectionModel[]
 			resume.sections = [
 				...resume.sections.filter(
 					(s) => s.columnIndex !== model.columnIndex
@@ -130,7 +132,7 @@ export default function Section({
 	const onMoveUpClicked = useCallback(() => {
 		if (index === 0) return
 
-		moveItem(index - 1)
+		moveItem(index - 2)
 	}, [index, moveItem])
 
 	const onMoveDownClicked = useCallback(() => {
@@ -139,15 +141,58 @@ export default function Section({
 		).length
 		if (index === count - 1) return
 
-		moveItem(index + 2) // +2 to target the index of the drop zone below the next section
+		moveItem(index + 1)
 	}, [index, model.columnIndex, moveItem, resume.sections])
 
+	const validElementDropSource = useCallback(
+		(targetIndex: number) => {
+			return (
+				dragData.itemType === DraggableType.ELEMENT &&
+				dragData.sectionId === model.id &&
+				(targetIndex > dragData.itemIndex ||
+					Math.abs(targetIndex - dragData.itemIndex) > 1)
+			)
+		},
+		[dragData.itemIndex, dragData.itemType, dragData.sectionId, model.id]
+	)
+
+	const onElementDropped = useCallback(
+		(droppedIndex: number) => {
+			const section = resume.sections.find((s) => s.id === model.id)
+			const sectionIndex = resume.sections.findIndex(
+				(s) => s.id === model.id
+			)
+
+			if (!section) return
+			const draggedItemIndex = section?.elements.findIndex(
+				(x) => x.id == dragData.elementId
+			)
+			const newOrder = reorderSections<Element>(
+				section.elements || [],
+				draggedItemIndex,
+				droppedIndex
+			) as Element[]
+
+			section.elements = [...newOrder]
+			resume.sections.splice(sectionIndex, 1, section)
+			updateResume(resume)
+
+			mReorderElements.mutate(
+				newOrder.map((s) => {
+					return { elementId: s.id, newOrder: s.order }
+				})
+			)
+		},
+
+		[dragData.elementId, mReorderElements, model.id, resume, updateResume]
+	)
+
 	return (
-		<div className={`${dragged ? 'opacity-60' : ''}`}>
+		<div className={`${dragged ? 'opacity-60' : ''} pt-8 pb-4`}>
 			<SectionTitle
 				text={model.title}
 				onTextChanged={onTextChanged}
-				draggable={true}
+				draggable
 				onDragStart={dragStart}
 				onDragEnd={dragEnd}
 				onRemoveClicked={onRemoveClicked}
@@ -157,12 +202,15 @@ export default function Section({
 			<div ref={animateRef}>
 				{model.elements
 					.sort((a, b) => a.order - b.order)
-					.map((e) => {
+					.map((e, i) => {
 						return (
 							<BaseElement
 								key={e.id}
+								index={i}
 								element={e}
 								onElementUpdated={onElementUpdated}
+								isValidSource={validElementDropSource}
+								onItemDropped={onElementDropped}
 							/>
 						)
 					})}
@@ -174,3 +222,5 @@ export default function Section({
 		</div>
 	)
 }
+
+export default withDropTarget(Section)
