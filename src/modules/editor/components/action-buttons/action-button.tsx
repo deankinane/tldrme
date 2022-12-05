@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function MobileActionButton({
+export default function ActionButton({
 	...props
 }: React.ComponentProps<'button'>) {
 	return (

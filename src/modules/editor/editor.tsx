@@ -1,6 +1,7 @@
 import type { ResumeModel } from '@/utils/common/types'
 import { useSmallScreen } from '@/utils/hooks/useMediaQuery'
 import React from 'react'
+import ActionButtons from './components/action-buttons/action-buttons'
 import EditorColumn from './components/editor-column/editor-column'
 import Header from './components/header/header'
 import TrashDropTarget from './components/trash-drop-target/trash-drop-target'
@@ -43,6 +44,7 @@ export default function Editor({ resume }: Props) {
 			</div>
 
 			<TrashDropTarget />
+			<ActionButtons />
 		</ResumeProvider>
 	)
 }

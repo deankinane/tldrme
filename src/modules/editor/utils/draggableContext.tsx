@@ -7,7 +7,7 @@ export enum DraggableType {
 }
 
 export type DraggableData = {
-	itemInDrag: boolean
+	itemSelected: boolean
 	itemType: DraggableType
 	sectionId?: string
 	elementId?: string
@@ -18,11 +18,11 @@ export type DraggableData = {
 export interface Draggable {
 	dragData: DraggableData
 	setDragData: (data: DraggableData) => void
-	endDrag: () => void
+	endDrag: (itemId?: string) => void
 }
 
 const DraggableDataDefault: DraggableData = {
-	itemInDrag: false,
+	itemSelected: false,
 	itemType: DraggableType.SECTION,
 	itemIndex: 0,
 	columnIndex: 0,
@@ -45,15 +45,33 @@ function DraggableProvider({ children }: PropsWithChildren) {
 		useState<DraggableData>(DraggableDataDefault)
 
 	const setData = useCallback((data: DraggableData) => {
-		setDraggable(data)
-	}, [])
-
-	const endDrag = useCallback(() => {
+		console.log('set', data)
 		setDraggable((d) => {
 			return {
 				...d,
-				itemInDrag: false,
+				...data,
+				elementId:
+					data.itemType === DraggableType.ELEMENT
+						? data.elementId
+						: '',
 			}
+		})
+	}, [])
+
+	const endDrag = useCallback((itemId?: string) => {
+		setDraggable((d) => {
+			if (
+				!itemId ||
+				itemId === d.elementId ||
+				(d.elementId === '' && itemId === d.sectionId)
+			) {
+				return {
+					...d,
+					itemSelected: false,
+				}
+			}
+
+			return d
 		})
 	}, [])
 

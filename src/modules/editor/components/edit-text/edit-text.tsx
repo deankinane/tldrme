@@ -6,17 +6,17 @@ import React, { useCallback, useState } from 'react'
 interface Props extends React.ComponentProps<'div'> {
 	fontStyles: string
 	text?: string
-	interactive?: boolean
 	multiline?: boolean
 	onTextChanged: (text: string) => void
+	onBlur: () => void
 }
 
 export default function EditText({
 	fontStyles,
 	text = 'Click to edit',
 	onTextChanged,
-	interactive = true,
 	multiline = false,
+	onBlur,
 	...props
 }: Props) {
 	const [editMode, setEditMode] = useState(false)
@@ -31,12 +31,14 @@ export default function EditText({
 
 	const onInputBlurred = useCallback(() => {
 		setEditMode(false)
-		onTextChanged(inputValue)
-	}, [onTextChanged, inputValue])
+		if (inputValue !== text) onTextChanged(inputValue)
+
+		onBlur()
+	}, [inputValue, text, onTextChanged, onBlur])
 
 	const onTextClicked = useCallback(() => {
-		if (interactive) setEditMode(true)
-	}, [interactive])
+		setEditMode(true)
+	}, [])
 
 	const onFocus = useCallback(() => {
 		setTextAreaHeight(textAreaElement)

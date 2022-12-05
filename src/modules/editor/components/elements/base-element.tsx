@@ -2,7 +2,9 @@ import { withDropTarget } from '@/modules/common/components/withDropTarget'
 import { trpc } from '@/utils/trpc'
 import type { Element } from '@prisma/client'
 import { useCallback, useContext, useState } from 'react'
+import { isMobile } from 'react-device-detect'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
+import BulletTextElement from './bullet-text/bullet-text'
 import IconTextElement from './icon-text/icon-text'
 import SubTitleElement from './subtitle-element/subtitle-element'
 
@@ -29,22 +31,34 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 		[mUpdateElement, onElementUpdated]
 	)
 
-	const dragStart = useCallback(() => {
-		setDragData({
-			itemInDrag: true,
+	const getDragData = useCallback(() => {
+		return {
+			itemSelected: true,
 			itemType: DraggableType.ELEMENT,
 			elementId: element.id,
 			sectionId: element.sectionId,
 			columnIndex: 0,
 			itemIndex: index,
-		})
+		}
+	}, [element.id, element.sectionId, index])
+
+	const dragStart = useCallback(() => {
+		setDragData(getDragData())
 		setDragged(true)
-	}, [element.id, element.sectionId, index, setDragData])
+	}, [getDragData, setDragData])
 
 	const dragEnd = useCallback(() => {
 		setDragged(false)
 		endDrag()
 	}, [endDrag])
+
+	const onSelectElement = useCallback(() => {
+		if (isMobile) setDragData(getDragData())
+	}, [getDragData, setDragData])
+
+	const onElementBlur = useCallback(() => {
+		setTimeout(() => endDrag(element.id), 200)
+	}, [element.id, endDrag])
 
 	return (
 		<div
@@ -52,11 +66,13 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 			onDragStart={dragStart}
 			onDragEnd={dragEnd}
 			className={`${dragged ? 'opacity-60' : ''}`}
+			onClick={onSelectElement}
 		>
 			{element.type === 'SubTitle' ? (
 				<SubTitleElement
 					element={element}
 					onElementUpdated={updateElement}
+					onBlur={onElementBlur}
 				/>
 			) : (
 				<></>
@@ -66,6 +82,17 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 				<IconTextElement
 					element={element}
 					onElementUpdated={updateElement}
+					onBlur={onElementBlur}
+				/>
+			) : (
+				<></>
+			)}
+
+			{element.type === 'BulletText' ? (
+				<BulletTextElement
+					element={element}
+					onElementUpdated={updateElement}
+					onBlur={onElementBlur}
 				/>
 			) : (
 				<></>

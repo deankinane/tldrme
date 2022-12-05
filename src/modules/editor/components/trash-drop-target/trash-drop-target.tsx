@@ -4,6 +4,7 @@ import type { DraggableData } from '../../utils/draggableContext'
 import { DraggableType } from '../../utils/draggableContext'
 import { DraggableContext } from '../../utils/draggableContext'
 import { ResumeContext } from '../../utils/resumeContext'
+import { isMobile } from 'react-device-detect'
 
 export default function TrashDropTarget() {
 	const [dragHover, setDragHover] = useState(false)
@@ -73,13 +74,15 @@ export default function TrashDropTarget() {
 		[onTrashDropped, dragData, endDrag]
 	)
 
-	return (
+	return isMobile ? (
+		<></>
+	) : (
 		<div
 			onDragEnter={onDragEnter}
 			onDragLeave={onDragLeave}
 			onDrop={onDrop}
 			onDragOver={onDragOver}
-			className={`${dragData.itemInDrag ? '!h-16 opacity-100' : ''} ${
+			className={`${dragData.itemSelected ? '!h-16 !opacity-100' : ''} ${
 				dragHover ? 'bg-red-300' : ''
 			} fixed bottom-8 left-[calc(50%-4.5rem)] my-0 mx-auto mt-40 h-0 w-36 overflow-hidden rounded-md border border-red-700 opacity-0 transition-all`}
 		></div>

@@ -6,6 +6,7 @@ import type { ElementProps } from '../common/element-props'
 export default function SubTitleElement({
 	element,
 	onElementUpdated,
+	onBlur,
 }: ElementProps) {
 	const onTextChanged = useCallback(
 		(text: string) => {
@@ -21,6 +22,7 @@ export default function SubTitleElement({
 				fontStyles="text-md lg:text-xl p-2 mt-2 font-semibold"
 				onTextChanged={onTextChanged}
 				text={element.text}
+				onBlur={onBlur}
 			/>
 		</div>
 	)

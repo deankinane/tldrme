@@ -11,6 +11,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { ResumeContext } from '../../utils/resumeContext'
 import reorderSections from '../../utils/reorder-sections'
 import { withDropTarget } from '@/modules/common/components/withDropTarget'
+import { isMobile } from 'react-device-detect'
 
 interface Props {
 	index: number
@@ -33,20 +34,23 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 			onModelUpdated(model)
 		},
 	})
-	const mRemoveSection = trpc.editor.removeSection.useMutation()
-	const mReorderSections = trpc.editor.reorderSection.useMutation()
+
 	const mReorderElements = trpc.editor.reorderElement.useMutation()
 
-	const dragStart = useCallback(() => {
-		setDragData({
-			itemInDrag: true,
+	const getDragData = useCallback(() => {
+		return {
+			itemSelected: true,
 			itemType: DraggableType.SECTION,
 			sectionId: model.id,
 			columnIndex: model.columnIndex,
 			itemIndex: index,
-		})
+		}
+	}, [index, model.columnIndex, model.id])
+
+	const dragStart = useCallback(() => {
+		setDragData(getDragData())
 		setDragged(true)
-	}, [index, model.columnIndex, model.id, setDragData])
+	}, [getDragData, setDragData])
 
 	const dragEnd = useCallback(() => {
 		setDragged(false)
@@ -63,8 +67,10 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 
 			model.title = text
 			onModelUpdated(model)
+
+			if (isMobile) endDrag()
 		},
-		[mUpdateSectionTitle, model, onModelUpdated]
+		[endDrag, mUpdateSectionTitle, model, onModelUpdated]
 	)
 
 	const onAddElementClicked = useCallback(
@@ -92,57 +98,6 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 		},
 		[model, onModelUpdated]
 	)
-
-	const onRemoveClicked = useCallback(() => {
-		mRemoveSection.mutate({
-			sectionId: model.id,
-		})
-		resume.sections = resume.sections.filter((s) => s.id !== model.id)
-		updateResume(resume)
-	}, [mRemoveSection, model.id, resume, updateResume])
-
-	const moveItem = useCallback(
-		(newIndex: number) => {
-			const columnSections = resume.sections.filter(
-				(s) => s.columnIndex === model.columnIndex
-			)
-
-			const newOrder = reorderSections<SectionModel>(
-				columnSections,
-				index,
-				newIndex
-			) as SectionModel[]
-			resume.sections = [
-				...resume.sections.filter(
-					(s) => s.columnIndex !== model.columnIndex
-				),
-				...newOrder,
-			]
-			updateResume(resume)
-			mReorderSections.mutate(
-				newOrder.map((s) => {
-					return { sectionId: s.id, newOrder: s.order }
-				})
-			)
-		},
-
-		[index, mReorderSections, model.columnIndex, resume, updateResume]
-	)
-
-	const onMoveUpClicked = useCallback(() => {
-		if (index === 0) return
-
-		moveItem(index - 2)
-	}, [index, moveItem])
-
-	const onMoveDownClicked = useCallback(() => {
-		const count = resume.sections.filter(
-			(s) => s.columnIndex === model.columnIndex
-		).length
-		if (index === count - 1) return
-
-		moveItem(index + 1)
-	}, [index, model.columnIndex, moveItem, resume.sections])
 
 	const validElementDropSource = useCallback(
 		(targetIndex: number) => {
@@ -187,6 +142,14 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 		[dragData.elementId, mReorderElements, model.id, resume, updateResume]
 	)
 
+	const onSelectSection = useCallback(() => {
+		if (isMobile) setDragData(getDragData())
+	}, [getDragData, setDragData])
+
+	const onSectionBlur = useCallback(() => {
+		setTimeout(() => endDrag(model.id), 200)
+	}, [endDrag, model.id])
+
 	return (
 		<div className={`${dragged ? 'opacity-60' : ''} pt-8 pb-4`}>
 			<SectionTitle
@@ -195,9 +158,8 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 				draggable
 				onDragStart={dragStart}
 				onDragEnd={dragEnd}
-				onRemoveClicked={onRemoveClicked}
-				onMoveUpClicked={onMoveUpClicked}
-				onMoveDownClicked={onMoveDownClicked}
+				onClick={onSelectSection}
+				onBlur={onSectionBlur}
 			/>
 			<div ref={animateRef}>
 				{model.elements
