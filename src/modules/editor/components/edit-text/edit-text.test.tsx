@@ -55,20 +55,6 @@ describe('EditText', () => {
 		cy.g('edit-text-input').should('have.focus')
 	})
 
-	it('should not switch to edit mode when user clicks on it if interactive set to false', () => {
-		cy.mount(
-			<EditText
-				fontStyles=""
-				interactive={false}
-				onTextChanged={() => {
-					return
-				}}
-			/>
-		)
-		cy.g('edit-text-p').click()
-		cy.g('edit-text-input').should('not.exist')
-	})
-
 	it('should switch to display mode when user clicks on something else', () => {
 		cy.mount(
 			<div>

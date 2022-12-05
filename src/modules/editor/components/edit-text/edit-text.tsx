@@ -8,7 +8,7 @@ interface Props extends React.ComponentProps<'div'> {
 	text?: string
 	multiline?: boolean
 	onTextChanged: (text: string) => void
-	onBlur: () => void
+	onBlur?: () => void
 }
 
 export default function EditText({
@@ -16,7 +16,9 @@ export default function EditText({
 	text = 'Click to edit',
 	onTextChanged,
 	multiline = false,
-	onBlur,
+	onBlur = () => {
+		return
+	},
 	...props
 }: Props) {
 	const [editMode, setEditMode] = useState(false)
