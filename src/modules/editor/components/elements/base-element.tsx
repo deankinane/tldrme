@@ -1,12 +1,14 @@
 import { withDropTarget } from '@/modules/common/components/withDropTarget'
 import { trpc } from '@/utils/trpc'
 import type { Element } from '@prisma/client'
+import { ElementType } from '@prisma/client'
 import { useCallback, useContext, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 import BulletTextElement from './bullet-text/bullet-text'
 import IconTextElement from './icon-text/icon-text'
 import SubTitleElement from './subtitle-element/subtitle-element'
+import TextElement from './text/text'
 
 interface Props {
 	element: Element
@@ -68,7 +70,7 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 			className={`${dragged ? 'opacity-60' : ''}`}
 			onClick={onSelectElement}
 		>
-			{element.type === 'SubTitle' ? (
+			{element.type === ElementType.SubTitle ? (
 				<SubTitleElement
 					element={element}
 					onElementUpdated={updateElement}
@@ -78,7 +80,7 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 				<></>
 			)}
 
-			{element.type === 'IconText' ? (
+			{element.type === ElementType.IconText ? (
 				<IconTextElement
 					element={element}
 					onElementUpdated={updateElement}
@@ -88,8 +90,18 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 				<></>
 			)}
 
-			{element.type === 'BulletText' ? (
+			{element.type === ElementType.BulletText ? (
 				<BulletTextElement
+					element={element}
+					onElementUpdated={updateElement}
+					onBlur={onElementBlur}
+				/>
+			) : (
+				<></>
+			)}
+
+			{element.type === ElementType.Text ? (
+				<TextElement
 					element={element}
 					onElementUpdated={updateElement}
 					onBlur={onElementBlur}

@@ -89,9 +89,10 @@ describe('EditText', () => {
 			</div>
 		)
 		cy.g('edit-text-p').click()
+		cy.g('edit-text-input').type('test')
 		cy.g('otherelement').click()
 
-		cy.g('@cb').should('have.been.calledWith', initialText)
+		cy.g('@cb').should('have.been.calledWith', initialText + 'test')
 	})
 
 	it('should apply css classes in fontStyles prop to the input element', () => {
@@ -114,7 +115,7 @@ describe('EditText', () => {
 		cy.mount(<EditText fontStyles="" onTextChanged={callback} />)
 
 		cy.g('edit-text-p').click()
-		cy.g('edit-text-input').type('{enter}')
+		cy.g('edit-text-input').type('test{enter}')
 
 		cy.g('@cb').should('have.been.called')
 		cy.g('edit-text-p').should('exist')

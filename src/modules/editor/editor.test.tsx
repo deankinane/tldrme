@@ -16,7 +16,7 @@ describe('Editor', () => {
 				})
 			}
 
-			const newOrder = reorderSections(sections, 3, 0)
+			const newOrder = reorderSections(sections, 3, -1) as SectionModel[]
 
 			expect(newOrder[0]?.order).to.eq(0)
 			expect(newOrder[0]?.title).to.eq('Section 3')
@@ -41,7 +41,7 @@ describe('Editor', () => {
 				})
 			}
 
-			const newOrder = reorderSections(sections, 0, 4)
+			const newOrder = reorderSections(sections, 0, 3) as SectionModel[]
 
 			expect(newOrder[0]?.order).to.eq(0)
 			expect(newOrder[0]?.title).to.eq('Section 1')
@@ -66,7 +66,7 @@ describe('Editor', () => {
 				})
 			}
 
-			const newOrder = reorderSections(sections, 0, 2)
+			const newOrder = reorderSections(sections, 0, 1) as SectionModel[]
 
 			expect(newOrder[0]?.order).to.eq(0)
 			expect(newOrder[0]?.title).to.eq('Section 1')
@@ -91,7 +91,7 @@ describe('Editor', () => {
 				})
 			}
 
-			const newOrder = reorderSections(sections, 3, 2)
+			const newOrder = reorderSections(sections, 3, 1) as SectionModel[]
 
 			expect(newOrder[0]?.order).to.eq(0)
 			expect(newOrder[0]?.title).to.eq('Section 0')

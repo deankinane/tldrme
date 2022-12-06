@@ -22,6 +22,13 @@ describe('BaseElement', () => {
 					pageProps={{}}
 					element={el}
 					onElementUpdated={cy.stub()}
+					index={0}
+					isValidSource={() => {
+						return true
+					}}
+					onItemDropped={() => {
+						return
+					}}
 				/>
 			)
 
