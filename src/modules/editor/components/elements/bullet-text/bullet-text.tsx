@@ -1,4 +1,8 @@
-import { useSmallScreen } from '@/utils/hooks/useMediaQuery'
+import {
+	MediaSize,
+	useMediaQuery,
+	useSmallScreen,
+} from '@/utils/hooks/useMediaQuery'
 import { ElementType } from '@prisma/client'
 import React, { useCallback } from 'react'
 import EditText from '../../edit-text/edit-text'
@@ -18,21 +22,17 @@ export default function BulletTextElement({
 		[element, onElementUpdated]
 	)
 
-	const smallScreen = useSmallScreen()
-
 	return (
 		<div
-			className="mb-2 flex"
+			className=" flex"
 			data-testid={`element-${ElementType.BulletText}`}
 		>
 			<div>
-				<svg viewBox="0 0 20 20" className="mx-2 w-6">
-					<circle
-						cx={smallScreen ? 8 : 10}
-						cy={smallScreen ? 8 : 11}
-						r="5"
-						fill="black"
-					/>
+				<svg
+					viewBox="0 0 20 20"
+					className="mx-2 w-5 pt-1 lg:w-6 lg:pt-2"
+				>
+					<circle cx={10} cy={10} r={5} fill="black" />
 				</svg>
 			</div>
 

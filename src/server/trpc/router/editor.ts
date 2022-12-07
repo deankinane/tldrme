@@ -23,7 +23,23 @@ export const editorRouter = router({
 				},
 			})
 		}),
-
+	updateProfilePicture: publicProcedure
+		.input(
+			z.object({
+				resumeId: z.string(),
+				base64: z.string(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			await prisma?.resume.update({
+				where: {
+					id: input.resumeId,
+				},
+				data: {
+					profilePicUrl: input.base64,
+				},
+			})
+		}),
 	addSection: publicProcedure
 		.input(
 			z.object({

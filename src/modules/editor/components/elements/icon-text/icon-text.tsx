@@ -22,12 +22,9 @@ export default function IconTextElement({
 	)
 
 	return (
-		<div
-			className="mb-2 flex"
-			data-testid={`element-${ElementType.IconText}`}
-		>
-			<div className="lg:mt-1">
-				<Icon className="mx-2 w-6" />
+		<div className="flex" data-testid={`element-${ElementType.IconText}`}>
+			<div>
+				<Icon className="mx-2 w-5 pt-1 lg:w-6 lg:pt-2" />
 			</div>
 
 			<EditText

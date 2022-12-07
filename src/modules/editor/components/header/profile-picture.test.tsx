@@ -2,7 +2,7 @@ import ProfilePicture from './profile-picture'
 
 describe('ProfilePicture', () => {
 	it('should display the profile picture if passed as a prop', () => {
-		cy.mount(<ProfilePicture imageUrl="/fake.jpg" />)
+		cy.mount(<ProfilePicture imageData="/fake.jpg" />)
 		cy.g('profile-picture-image').should('exist')
 		cy.g('profile-picture-default').should('not.exist')
 	})

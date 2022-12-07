@@ -18,7 +18,10 @@ export default function TextElement({
 	)
 
 	return (
-		<div className="mb-2 flex" data-testid={`element-${ElementType.Text}`}>
+		<div
+			className="mb-2 flex pl-2"
+			data-testid={`element-${ElementType.Text}`}
+		>
 			<EditText
 				fontStyles="text-sm lg:text-lg"
 				onTextChanged={onTextChanged}
