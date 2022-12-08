@@ -1,20 +1,23 @@
 import { trpc } from '@/utils/trpc'
 import { CameraIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
-import React, { useCallback, useContext, useRef } from 'react'
+import React, { useCallback, useContext, useRef, useState } from 'react'
 import { ResumeContext } from '../../utils/resumeContext'
+import CropperModal from './cropper-modal'
 interface Props {
 	imageData?: string
 }
 export default function ProfilePicture({ imageData }: Props) {
 	const fileDialog = useRef<HTMLInputElement>(null)
 	const { resume, updateResume } = useContext(ResumeContext)
+	const [cropMode, setCropMode] = useState(false)
+	const [cropImageData, setCropImageData] = useState('')
 
 	const mUpdateProfilePicture = trpc.editor.updateProfilePicture.useMutation()
 
 	const openFileDialog = useCallback(() => {
-		fileDialog.current?.click()
-	}, [])
+		if (!cropMode) fileDialog.current?.click()
+	}, [cropMode])
 
 	const onFileSelected = useCallback(
 		(ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,19 +29,21 @@ export default function ProfilePicture({ imageData }: Props) {
 				reader.onloadend = function () {
 					const result = reader.result?.toString()
 					if (result) {
-						mUpdateProfilePicture.mutate({
-							resumeId: resume.id,
-							base64: result,
-						})
+						// mUpdateProfilePicture.mutate({
+						// 	resumeId: resume.id,
+						// 	base64: result,
+						// })
 
-						resume.profilePicUrl = result
-						updateResume(resume)
+						// resume.profilePicUrl = result
+						// updateResume(resume)
+						setCropImageData(result)
+						setCropMode(true)
 					}
 				}
 				reader.readAsDataURL(file)
 			}
 		},
-		[mUpdateProfilePicture, resume, updateResume]
+		[]
 	)
 
 	return (
@@ -72,6 +77,7 @@ export default function ProfilePicture({ imageData }: Props) {
 					className="h-full w-full rounded-full bg-slate-400 transition-opacity group-hover:opacity-50"
 				></div>
 			)}
+			{cropMode ? <CropperModal image={cropImageData} /> : <></>}
 		</div>
 	)
 }
