@@ -26,16 +26,9 @@ export default function ProfilePicture({ imageData }: Props) {
 				if (!file) return
 
 				const reader = new FileReader()
-				reader.onloadend = function () {
+				reader.onloadend = function() {
 					const result = reader.result?.toString()
 					if (result) {
-						// mUpdateProfilePicture.mutate({
-						// 	resumeId: resume.id,
-						// 	base64: result,
-						// })
-
-						// resume.profilePicUrl = result
-						// updateResume(resume)
 						setCropImageData(result)
 						setCropMode(true)
 					}
@@ -44,6 +37,19 @@ export default function ProfilePicture({ imageData }: Props) {
 			}
 		},
 		[]
+	)
+
+	const onImageCropped = useCallback(
+		(data: string) => {
+			setCropMode(false)
+			resume.profilePicUrl = data
+			updateResume(resume)
+			mUpdateProfilePicture.mutate({
+				resumeId: resume.id,
+				base64: data,
+			})
+		},
+		[resume, updateResume],
 	)
 
 	return (
@@ -77,7 +83,7 @@ export default function ProfilePicture({ imageData }: Props) {
 					className="h-full w-full rounded-full bg-slate-400 transition-opacity group-hover:opacity-50"
 				></div>
 			)}
-			{cropMode ? <CropperModal image={cropImageData} /> : <></>}
+			{cropMode ? <CropperModal image={cropImageData} onImageCropped={onImageCropped} /> : <></>}
 		</div>
 	)
 }
