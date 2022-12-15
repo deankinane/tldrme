@@ -55,6 +55,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Resume        Resume[]
 }
 
 model VerificationToken {
@@ -66,31 +67,33 @@ model VerificationToken {
 }
 
 model Resume {
-  id String @id @default(cuid())
-  headerTitle String
+  id             String    @id @default(cuid())
+  headerTitle    String
   headerSubtitle String
-  profilePicUrl String?
-  sections  Section[]
+  profilePicUrl  String?
+  sections       Section[]
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Section {
-  id String @id @default(cuid())
-  resumeId String
+  id          String    @id @default(cuid())
+  resumeId    String
   columnIndex Int
-  order Int
-  title String
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  elements Element[]
+  order       Int
+  title       String
+  resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  elements    Element[]
 }
 
 model Element {
-  id String @id @default(cuid())
+  id        String      @id @default(cuid())
   sectionId String
-  type ElementType
-  order Int
-  text String
-  icon String
-  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  type      ElementType
+  order     Int
+  text      String
+  icon      String
+  section   Section     @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 }
 
 enum ElementType {
