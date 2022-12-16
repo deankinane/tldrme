@@ -4,6 +4,7 @@ import { ClientSafeProvider, getProviders, LiteralUnion, signIn, signOut, useSes
 import React, { useCallback } from 'react'
 import { BuiltInProviderType } from 'next-auth/providers'
 import { Button } from '@/modules/common/button/button'
+import { UserWidget } from '@/modules/common/user-widget/user-widget'
 interface Props {
 	providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>
 }
@@ -27,7 +28,8 @@ const Home: NextPage<Props> = ({ providers }) => {
 					content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
 				></meta>
 			</Head>
-			<main className='from-indigo-800 bg-gradient-to-bl to-black h-full'>
+			<main className='h-full'>
+				<UserWidget className='fixed top-10 right-10' />
 				<div className="m-auto w-2/6 flex flex-col justify-center items-center h-full">
 					<h1 className='font-bold text-7xl text-white mb-10'>tldrMe</h1>
 					<h2 className='text-white font-semibold text-3xl'>You, succinctly.</h2>

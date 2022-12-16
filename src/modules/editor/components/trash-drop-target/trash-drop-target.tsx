@@ -1,5 +1,5 @@
 import { trpc } from '@/utils/trpc'
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import type { DraggableData } from '../../utils/draggableContext'
 import { DraggableType } from '../../utils/draggableContext'
 import { DraggableContext } from '../../utils/draggableContext'
@@ -10,9 +10,14 @@ export default function TrashDropTarget() {
 	const [dragHover, setDragHover] = useState(false)
 	const { dragData, endDrag } = useContext(DraggableContext)
 	const { resume, updateResume } = useContext(ResumeContext)
-
+	const [mobile, setMobile] = useState(false)
 	const mRemoveSection = trpc.editor.removeSection.useMutation()
 	const mRemoveElement = trpc.editor.removeElement.useMutation()
+
+	useEffect(() => {
+		setMobile(isMobile)
+
+	}, [])
 
 	const onDragOver = useCallback((ev: React.DragEvent<HTMLDivElement>) => {
 		ev.preventDefault()
@@ -74,17 +79,17 @@ export default function TrashDropTarget() {
 		[onTrashDropped, dragData, endDrag]
 	)
 
-	return isMobile ? (
-		<></>
-	) : (
-		<div
-			onDragEnter={onDragEnter}
-			onDragLeave={onDragLeave}
-			onDrop={onDrop}
-			onDragOver={onDragOver}
-			className={`${dragData.itemSelected ? '!h-16 !opacity-100' : ''} ${
-				dragHover ? 'bg-red-300' : ''
-			} fixed bottom-8 left-[calc(50%-4.5rem)] my-0 mx-auto mt-40 h-0 w-36 overflow-hidden rounded-md border border-red-700 opacity-0 transition-all`}
-		></div>
+	return (
+		!mobile ?
+
+			<div
+				onDragEnter={onDragEnter}
+				onDragLeave={onDragLeave}
+				onDrop={onDrop}
+				onDragOver={onDragOver}
+				className={`${dragData.itemSelected ? '!h-16 !opacity-100' : ''} ${dragHover ? 'bg-red-300' : ''
+					} fixed bottom-8 left-[calc(50%-4.5rem)] my-0 mx-auto mt-40 h-0 w-36 overflow-hidden rounded-md border border-red-700 opacity-0 transition-all`}
+			></div>
+			: <></>
 	)
 }

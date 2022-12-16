@@ -151,7 +151,7 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 	}, [endDrag, model.id])
 
 	return (
-		<div className={`${dragged ? 'opacity-60' : ''} pt-8 pb-4`}>
+		<div className={`${dragged ? 'opacity-60' : ''}  pb-12`}>
 			<SectionTitle
 				text={model.title}
 				onTextChanged={onTextChanged}

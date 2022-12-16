@@ -2,7 +2,6 @@ import AppHeader from '@/modules/app-header/components/app-header'
 import Editor from '@/modules/editor/editor'
 import { DraggableProvider } from '@/modules/editor/utils/draggableContext'
 import type { ResumeModel } from '@/utils/common/types'
-import { CreateNextContextOptions } from '@trpc/server/adapters/next'
 import { GetServerSideProps } from 'next'
 import React from 'react'
 import { getServerAuthSession } from 'src/server/common/get-server-auth-session'
@@ -14,7 +13,7 @@ export default function EditorPage({ resumeModel }: Props) {
 	return (
 		<>
 			<AppHeader></AppHeader>
-			<div className="fixed top-16 bottom-0 left-0 right-0 mx-auto max-w-screen-xl md:static md:h-full md:pt-16">
+			<div className="fixed top-16 bottom-0 left-0 right-0 mx-auto max-w-screen-2xl">
 				<DraggableProvider>
 					<Editor resume={resumeModel} />
 				</DraggableProvider>
@@ -48,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	})
 
 	if (!resumeModel) {
-		const newResume = await prisma?.resume.create({
+		await prisma?.resume.create({
 			data: {
 				userId: session.user.id,
 				headerTitle: 'Your Name Here',
