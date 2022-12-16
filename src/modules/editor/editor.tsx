@@ -16,7 +16,7 @@ export default function Editor({ resume }: Props) {
 
 	return (
 		<ResumeProvider initialState={resume}>
-			<div className='h-full flex'>
+			<div className='h-full flex max-w-screen-2xl'>
 
 				<Sidebar />
 				<div className="h-full bg-white overflow-hidden md:h-auto md:min-h-full md:overflow-visible md:px-8 lg:px-16 grow">

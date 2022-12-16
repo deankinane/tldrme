@@ -5,6 +5,7 @@ import React, { useCallback } from 'react'
 import { BuiltInProviderType } from 'next-auth/providers'
 import { Button } from '@/modules/common/button/button'
 import { UserWidget } from '@/modules/common/user-widget/user-widget'
+import { LinkButton } from '@/modules/common/link-button/link-button'
 interface Props {
 	providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>
 }
@@ -36,10 +37,10 @@ const Home: NextPage<Props> = ({ providers }) => {
 					{
 						(status === "authenticated") ?
 
-							<Button
+							<LinkButton
 								className='mt-32'
 								href='/editor'
-							>Edit Your Resume Now</Button>
+							>Edit Your Resume Now</LinkButton>
 
 							:
 							<Button
