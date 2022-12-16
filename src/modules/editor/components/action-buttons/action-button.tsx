@@ -5,7 +5,7 @@ export default function ActionButton({
 }: React.ComponentProps<'button'>) {
 	return (
 		<button
-			className="mb-2 h-8 w-8 rounded-full bg-purple-900 p-2 text-white"
+			className="mb-2 h-8 w-8 rounded-full bg-indigo-500 p-2 text-white"
 			{...props}
 		>
 			{props.children}

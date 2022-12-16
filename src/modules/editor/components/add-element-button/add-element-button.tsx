@@ -59,7 +59,7 @@ export default function AddElementButton({
 	return (
 		<div className="ml-2 mt-4 mb-4 flex">
 			<button
-				className="mr-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-800 p-2 font-bold text-white transition-all hover:bg-purple-600 focus:rotate-45"
+				className="mr-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-800 p-2 font-bold text-white transition-all hover:bg-indigo-600 focus:rotate-45"
 				onClick={onToggleClick}
 				onBlur={onButtonBlur}
 				data-testid="show-options-button"

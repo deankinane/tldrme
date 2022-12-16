@@ -167,7 +167,7 @@ export default function ActionButtons() {
 	}, [dragData.itemType, removeElement, removeSection])
 
 	return isMobile && dragData.itemSelected ? (
-		<div className="fixed right-4 top-1/2 z-50 mt-2 flex flex-col rounded-full border border-purple-200 bg-purple-200 p-2 pb-0 shadow-md">
+		<div className="fixed right-4 top-1/2 z-50 mt-2 flex flex-col rounded-full border  bg-indigo-700 p-2 pb-0 shadow-lg">
 			<ActionButton onClick={onMoveUpClicked}>
 				<ChevronUpIcon />
 			</ActionButton>

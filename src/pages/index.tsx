@@ -30,9 +30,9 @@ const Home: NextPage<Props> = ({ providers }) => {
 			</Head>
 			<main className='h-full'>
 				<UserWidget className='fixed top-10 right-10' />
-				<div className="m-auto w-2/6 flex flex-col justify-center items-center h-full">
-					<h1 className='font-bold text-7xl text-white mb-10'>tldrMe</h1>
-					<h2 className='text-white font-semibold text-3xl'>You, succinctly.</h2>
+				<div className="m-auto w-full px-20 lg:px-0 lg:w-2/6 flex flex-col justify-center items-center h-full">
+					<h1 className='font-bold text-5xl lg:text-7xl text-white mb-10'>tldrMe</h1>
+					<h2 className='text-white font-semibold text-xl lg:text-3xl'>You, succinctly.</h2>
 					{
 						(status === "authenticated") ?
 
