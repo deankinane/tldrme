@@ -13,6 +13,7 @@ const defaultResumeModel: ResumeModel = {
 	headerSubtitle: '',
 	profilePicUrl: '',
 	sections: [],
+	userId: ''
 }
 
 export const ResumeContext = createContext<IResumeContext>({

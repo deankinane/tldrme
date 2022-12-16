@@ -36,7 +36,8 @@ const Home: NextPage<Props> = ({ providers }) => {
 
 							<Button
 								className='mt-32'
-								onClick={onLoginClick}>Edit Your Resume Now</Button>
+								href='/editor'
+							>Edit Your Resume Now</Button>
 
 							:
 							<Button

@@ -2,7 +2,10 @@ import AppHeader from '@/modules/app-header/components/app-header'
 import Editor from '@/modules/editor/editor'
 import { DraggableProvider } from '@/modules/editor/utils/draggableContext'
 import type { ResumeModel } from '@/utils/common/types'
+import { CreateNextContextOptions } from '@trpc/server/adapters/next'
+import { GetServerSideProps } from 'next'
 import React from 'react'
+import { getServerAuthSession } from 'src/server/common/get-server-auth-session'
 import { prisma } from 'src/server/db/client'
 interface Props {
 	resumeModel: ResumeModel
@@ -20,10 +23,20 @@ export default function EditorPage({ resumeModel }: Props) {
 	)
 }
 
-export async function getServerSideProps() {
-	const resumeModel = await prisma?.resume.findUnique({
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	const session = await getServerAuthSession(context)
+	if (!session || !session.user) {
+		return {
+			redirect: {
+				destination: "/",
+				permanent: false
+			}
+		}
+	}
+
+	let resumeModel = await prisma?.resume.findFirst({
 		where: {
-			id: 'clb2tj0100000ttyopqsmvlu6',
+			userId: session.user.id
 		},
 		include: {
 			sections: {
@@ -33,6 +46,31 @@ export async function getServerSideProps() {
 			},
 		},
 	})
+
+	if (!resumeModel) {
+		const newResume = await prisma?.resume.create({
+			data: {
+				userId: session.user.id,
+				headerTitle: 'Your Name Here',
+				headerSubtitle: 'Your job description goes here',
+			}
+		})
+
+
+		resumeModel = await prisma?.resume.findFirst({
+			where: {
+				userId: session.user.id
+			},
+			include: {
+				sections: {
+					include: {
+						elements: true,
+					},
+				},
+			},
+		})
+
+	}
 
 	return {
 		props: { resumeModel },
