@@ -27,15 +27,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	if (!session || !session.user) {
 		return {
 			redirect: {
-				destination: "/",
-				permanent: false
-			}
+				destination: '/',
+				permanent: false,
+			},
 		}
 	}
 
 	let resumeModel = await prisma?.resume.findFirst({
 		where: {
-			userId: session.user.id
+			userId: session.user.id,
 		},
 		include: {
 			sections: {
@@ -52,13 +52,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 				userId: session.user.id,
 				headerTitle: 'Your Name Here',
 				headerSubtitle: 'Your job description goes here',
-			}
+			},
 		})
-
 
 		resumeModel = await prisma?.resume.findFirst({
 			where: {
-				userId: session.user.id
+				userId: session.user.id,
 			},
 			include: {
 				sections: {
@@ -68,7 +67,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 				},
 			},
 		})
-
 	}
 
 	return {
