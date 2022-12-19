@@ -13,8 +13,7 @@ const colors = [
 	'bg-[#000000]',
 ]
 export const ColorPicker = () => {
-	const [color, setColor] = useState('#000000')
-
+	const [color, setColor] = useState('bg-[#000000]')
 	return (
 		<div className="grid w-60 grid-cols-4 grid-rows-2 rounded-md border border-black bg-white p-2">
 			{colors.map((c) => (
@@ -22,8 +21,8 @@ export const ColorPicker = () => {
 					key={c}
 					onClick={() => setColor(c)}
 					className={`${
-						c === color ? 'border' : ''
-					} border-black-100 m-1 rounded-full bg-white p-1`}
+						c === color ? 'border-black' : ''
+					} m-1 rounded-full border border-white bg-white p-1`}
 				>
 					<div className={`${c} h-6 w-6 rounded-full`}></div>
 				</div>
