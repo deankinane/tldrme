@@ -47,11 +47,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	})
 
 	if (!resumeModel) {
+		const styles = await prisma?.resumeStyle.create({
+			data: {
+				headerTitleColor: 1,
+				headerSubtitleColor: 1,
+				sectionTitleColor: 1,
+				elementTextColor: 1,
+				iconColor: 1,
+				bulletColor: 1,
+			},
+		})
+
 		await prisma?.resume.create({
 			data: {
 				userId: session.user.id,
-				headerTitle: 'Your Name Here',
+				headerTitle: session.user.name ?? 'Your Name Here',
 				headerSubtitle: 'Your job description goes here',
+				resumeStyleId: styles.id,
 			},
 		})
 
@@ -65,6 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 						elements: true,
 					},
 				},
+				resumeStyle: true,
 			},
 		})
 	}

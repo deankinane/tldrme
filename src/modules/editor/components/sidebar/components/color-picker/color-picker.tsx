@@ -20,28 +20,29 @@ const colors = [
 ]
 
 interface Props {
+	initialColor?: string
 	onColorChanged: (color: string) => void
 }
 
-export const ColorPicker = ({ onColorChanged }: Props) => {
+export const ColorPicker = ({ onColorChanged, initialColor }: Props) => {
 	const [open, setOpen] = useState(false)
-	const [color, setColor] = useState(colors[0])
+	const [color, setColor] = useState(initialColor ?? colors[0])
 	const onColorClicked = useCallback((c: string) => {
 		setColor(c)
 		onColorChanged(c)
+		setOpen(false)
 	}, [])
 
 	return (
-		<>
+		<div className="relative">
+			<div className="rounded-full bg-white p-1">
+				<div
+					className={`${color} h-6 w-6 rounded-full`}
+					onClick={() => setOpen(!open)}
+				></div>
+			</div>
 			{open ? (
-				<div>
-					<div
-						className={`${color} h-6 w-6 rounded-md`}
-						onClick={() => setOpen(!open)}
-					></div>
-				</div>
-			) : (
-				<div className="flex w-64 flex-wrap rounded-md border border-black bg-white p-2">
+				<div className="absolute left-12 top-0 flex w-48 flex-wrap rounded-md border border-black bg-white p-2">
 					{colors.map((c) => (
 						<div
 							key={c}
@@ -54,7 +55,9 @@ export const ColorPicker = ({ onColorChanged }: Props) => {
 						</div>
 					))}
 				</div>
+			) : (
+				<></>
 			)}
-		</>
+		</div>
 	)
 }

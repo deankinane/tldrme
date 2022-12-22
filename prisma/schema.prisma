@@ -67,13 +67,15 @@ model VerificationToken {
 }
 
 model Resume {
-  id             String    @id @default(cuid())
+  id             String        @id @default(cuid())
   headerTitle    String
   headerSubtitle String
   profilePicUrl  String?
   sections       Section[]
   userId         String
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resumeStyleId  String       @unique
+  resumeStyle    ResumeStyle   @relation(fields: [resumeStyleId], references: [id], onDelete: Cascade)
 }
 
 model Section {
@@ -94,6 +96,17 @@ model Element {
   text      String
   icon      String
   section   Section     @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model ResumeStyle {
+  id                  String @id @default(cuid())
+  headerTitleColor    Int 
+  headerSubtitleColor Int
+  sectionTitleColor   Int
+  elementTextColor    Int
+  bulletColor         Int
+  iconColor           Int
+  resume              Resume?
 }
 
 enum ElementType {
