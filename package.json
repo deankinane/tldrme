@@ -8,7 +8,7 @@
 		"postinstall": "prisma generate",
 		"lint": "next lint",
 		"start": "next start",
-		"test": "cypress run",
+		"test": "cypress run --component --env DEBUG=cypress:*",
 		"test:open": "cypress open"
 	},
 	"dependencies": {

@@ -18,7 +18,7 @@ export default function Editor({ resume }: Props) {
 		<ResumeProvider initialState={resume}>
 			<div className="flex h-full max-w-screen-2xl">
 				<Sidebar />
-				<div className="h-full grow overflow-hidden bg-white md:h-auto md:min-h-full md:overflow-scroll md:px-8 lg:px-16">
+				<div className="h-full grow overflow-hidden bg-white md:h-auto md:min-h-full md:overflow-y-scroll md:px-8 lg:px-16">
 					<Header />
 
 					<div

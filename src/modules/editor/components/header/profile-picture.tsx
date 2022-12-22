@@ -64,7 +64,7 @@ export default function ProfilePicture({ imageData }: Props) {
 				hidden
 				onChange={onFileSelected}
 			/>
-			<div className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-500 p-5 opacity-0 transition-opacity group-hover:opacity-100">
+			<div className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-700 p-5 opacity-0 transition-opacity group-hover:opacity-100">
 				<CameraIcon className="w-10 text-white" />
 			</div>
 			{imageData ? (
