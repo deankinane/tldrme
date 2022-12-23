@@ -24,7 +24,9 @@ export const Sidebar = () => {
 			{
 				label: 'Job Title',
 				color: resume.resumeStyle.headerSubtitleColor,
-				callback: (c: number) => {},
+				callback: (c: number) => {
+					return
+				},
 			},
 		],
 		[resume]
