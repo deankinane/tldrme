@@ -1,17 +1,22 @@
 import EditText from '@/modules/editor/components/edit-text/edit-text'
 import { trpc } from '@/utils/trpc'
 import React, { useState, useCallback } from 'react'
+import { FgColors } from '../sidebar/components/color-picker/color-picker'
 
 interface Props {
 	resumeId: string
 	title: string
+	titleColor: number
 	subTitle: string
+	subTitleColor: number
 }
 
 export default function HeaderTitle({
 	resumeId,
 	title: pTitle,
+	titleColor,
 	subTitle: pSubTitle,
+	subTitleColor,
 }: Props) {
 	const [title, setTitle] = useState(pTitle)
 	const [subTitle, setSubTitle] = useState(pSubTitle)
@@ -50,7 +55,7 @@ export default function HeaderTitle({
 	return (
 		<div className="flex h-full flex-col justify-center">
 			<EditText
-				fontStyles="text-xl font-normal pt-1 pb-3 px-2 md:text-3xl lg:font-light lg:text-5xl font-thin"
+				fontStyles={`${FgColors[titleColor]} text-xl font-normal pt-1 pb-3 px-2 md:text-3xl lg:font-light lg:text-5xl font-thin`}
 				onTextChanged={onTitleChanged}
 				text={title}
 			/>

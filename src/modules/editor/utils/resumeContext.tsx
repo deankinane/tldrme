@@ -15,6 +15,15 @@ const defaultResumeModel: ResumeModel = {
 	sections: [],
 	userId: '',
 	resumeStyleId: '',
+	resumeStyle: {
+		id: '',
+		headerTitleColor: 1,
+		headerSubtitleColor: 1,
+		sectionTitleColor: 1,
+		elementTextColor: 1,
+		bulletColor: 1,
+		iconColor: 1,
+	},
 }
 
 export const ResumeContext = createContext<IResumeContext>({

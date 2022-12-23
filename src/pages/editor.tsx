@@ -43,6 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 					elements: true,
 				},
 			},
+			resumeStyle: true,
 		},
 	})
 

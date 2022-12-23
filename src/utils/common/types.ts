@@ -7,6 +7,7 @@ export type ResumeModel = Prisma.ResumeGetPayload<{
 				elements: true
 			}
 		}
+		resumeStyle: true
 	}
 }>
 

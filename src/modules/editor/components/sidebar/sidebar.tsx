@@ -1,22 +1,49 @@
-import React, { useCallback } from 'react'
-import { ColorPicker } from './components/color-picker/color-picker'
+import { trpc } from '@/utils/trpc'
+import React, { useCallback, useContext, useMemo } from 'react'
+import { ResumeContext } from '../../utils/resumeContext'
+import StyleItem from './components/style-item/style-item'
 
 export const Sidebar = () => {
-	const onColorChanged = useCallback((c: string) => {
-		console.log('Color', c)
-	}, [])
+	const { resume, updateResume } = useContext(ResumeContext)
+	const mUpdateStyles = trpc.editor.updateResumeStyle.useMutation()
+
+	const styleElements = useMemo(
+		() => [
+			{
+				label: 'Name',
+				color: resume.resumeStyle.headerTitleColor,
+				callback: (c: number) => {
+					resume.resumeStyle.headerTitleColor = c
+					updateResume(resume)
+					mUpdateStyles.mutate({
+						id: resume.resumeStyleId,
+						headerTitleColor: c,
+					})
+				},
+			},
+			{
+				label: 'Job Title',
+				color: resume.resumeStyle.headerSubtitleColor,
+				callback: (c: number) => {},
+			},
+		],
+		[resume]
+	)
 
 	return (
 		<div className="hidden h-full w-80 shrink-0 bg-[#00000077] xl:block">
 			<div className="p-8 text-white">
-				<p className="text-lg font-semibold">Section Styles</p>
+				<p className="text-lg font-semibold">Resume Styles</p>
 				<div className="my-4">
-					<div className="flex items-center">
-						<label className="mr-4" htmlFor="title-color">
-							Title Colour
-						</label>
-						<ColorPicker onColorChanged={onColorChanged} />
-					</div>
+					{styleElements.map((s) => (
+						<StyleItem
+							key={s.label}
+							onColorChanged={(c: number) => s.callback(c)}
+							initialColor={s.color}
+							label={s.label}
+							className="mt-4"
+						/>
+					))}
 				</div>
 			</div>
 		</div>

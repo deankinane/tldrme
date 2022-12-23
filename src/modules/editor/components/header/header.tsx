@@ -14,7 +14,9 @@ export default function Header() {
 				<HeaderTitle
 					resumeId={resume.id}
 					title={resume.headerTitle}
+					titleColor={resume.resumeStyle.headerTitleColor}
 					subTitle={resume.headerSubtitle}
+					subTitleColor={resume.resumeStyle.headerSubtitleColor}
 				/>
 			</div>
 		</div>

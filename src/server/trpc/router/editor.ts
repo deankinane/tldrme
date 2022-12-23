@@ -1,7 +1,7 @@
 import { ElementType } from '@prisma/client'
 import { z } from 'zod'
 import { prisma } from '../../db/client'
-import { router, publicProcedure } from '../trpc'
+import { router, publicProcedure, protectedProcedure } from '../trpc'
 
 export const editorRouter = router({
 	updateResumeTitle: publicProcedure
@@ -180,5 +180,22 @@ export const editorRouter = router({
 					})
 				}
 			}
+		}),
+	updateResumeStyle: protectedProcedure
+		.input(
+			z.object({
+				id: z.string(),
+				headerTitleColor: z.number(),
+			})
+		)
+		.mutation(async ({ input }) => {
+			await prisma.resumeStyle.update({
+				where: {
+					id: input.id,
+				},
+				data: {
+					headerTitleColor: input.headerTitleColor,
+				},
+			})
 		}),
 })

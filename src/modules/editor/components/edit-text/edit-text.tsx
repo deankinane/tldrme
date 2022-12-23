@@ -31,6 +31,10 @@ export default function EditText({
 		if (textInputElement.current) textInputElement.current.focus()
 	}, [editMode])
 
+	useEffect(() => {
+		// alert(fontStyles)
+	}, [fontStyles])
+
 	const onInputBlurred = useCallback(() => {
 		setEditMode(false)
 		if (inputValue !== text) onTextChanged(inputValue)
