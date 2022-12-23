@@ -1,4 +1,3 @@
-import { argv0 } from 'process'
 import React, { useCallback, useState } from 'react'
 const colors = [
 	'bg-[#000000]',
