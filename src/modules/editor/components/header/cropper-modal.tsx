@@ -18,16 +18,13 @@ export default function CropperModal({ image, onImageCropped }: Props) {
 		setZoom(parseFloat(ev.currentTarget.value))
 	}, [])
 
-	const onClickSave = useCallback(
-		() => {
-			if (editor.current) {
-				const canvas = editor.current.getImage()
-				const dataUrl = canvas.toDataURL()
-				onImageCropped(dataUrl)
-			}
-		},
-		[onImageCropped],
-	)
+	const onClickSave = useCallback(() => {
+		if (editor.current) {
+			const canvas = editor.current.getImageScaledToCanvas()
+			const dataUrl = canvas.toDataURL()
+			onImageCropped(dataUrl)
+		}
+	}, [onImageCropped])
 
 	return (
 		<div className="fixed top-0 bottom-0 left-0 right-0 z-10 bg-[#000000cc]">
@@ -53,7 +50,8 @@ export default function CropperModal({ image, onImageCropped }: Props) {
 						/>
 						<button
 							onClick={onClickSave}
-							className="ml-8 rounded-md bg-purple-700 px-4 py-1 font-semibold text-white">
+							className="ml-8 rounded-md bg-purple-700 px-4 py-1 font-semibold text-white"
+						>
 							Save
 						</button>
 					</div>
