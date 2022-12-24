@@ -13,5 +13,9 @@ const config = {
 		locales: ['en'],
 		defaultLocale: 'en',
 	},
+	webpack: (config, options) => {
+		config.watchOptions.ignored.push('/node_modules/')
+		return config
+	},
 }
 export default config
