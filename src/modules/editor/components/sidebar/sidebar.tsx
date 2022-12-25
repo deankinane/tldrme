@@ -1,4 +1,5 @@
 import { trpc } from '@/utils/trpc'
+import { ResumeStyle } from '@prisma/client'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { ResumeContext } from '../../utils/resumeContext'
 import StyleItem from './components/style-item/style-item'
@@ -6,6 +7,18 @@ import StyleItem from './components/style-item/style-item'
 export const Sidebar = () => {
 	const { resume, updateResume } = useContext(ResumeContext)
 	const mUpdateStyles = trpc.editor.updateResumeStyle.useMutation()
+
+	const updateStyles = useCallback((styles: ResumeStyle) => {
+		mUpdateStyles.mutate({
+			id: resume.resumeStyleId,
+			headerTitleColor: styles.headerTitleColor,
+			headerSubtitleColor: styles.headerSubtitleColor,
+			sectionTitleColor: styles.sectionTitleColor,
+			elementTextColor: styles.elementTextColor,
+			bulletColor: styles.bulletColor,
+			iconColor: styles.iconColor,
+		})
+	}, [])
 
 	const styleElements = useMemo(
 		() => [
@@ -15,21 +28,20 @@ export const Sidebar = () => {
 				callback: (c: number) => {
 					resume.resumeStyle.headerTitleColor = c
 					updateResume(resume)
-					mUpdateStyles.mutate({
-						id: resume.resumeStyleId,
-						headerTitleColor: c,
-					})
+					updateStyles(resume.resumeStyle)
 				},
 			},
 			{
 				label: 'Job Title',
 				color: resume.resumeStyle.headerSubtitleColor,
 				callback: (c: number) => {
-					return
+					resume.resumeStyle.headerSubtitleColor = c
+					updateResume(resume)
+					updateStyles(resume.resumeStyle)
 				},
 			},
 		],
-		[resume]
+		[resume, updateStyles]
 	)
 
 	return (

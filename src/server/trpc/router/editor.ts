@@ -186,6 +186,11 @@ export const editorRouter = router({
 			z.object({
 				id: z.string(),
 				headerTitleColor: z.number(),
+				headerSubtitleColor: z.number(),
+				sectionTitleColor: z.number(),
+				elementTextColor: z.number(),
+				bulletColor: z.number(),
+				iconColor: z.number(),
 			})
 		)
 		.mutation(async ({ input }) => {
@@ -195,6 +200,11 @@ export const editorRouter = router({
 				},
 				data: {
 					headerTitleColor: input.headerTitleColor,
+					headerSubtitleColor: input.headerSubtitleColor,
+					sectionTitleColor: input.sectionTitleColor,
+					elementTextColor: input.elementTextColor,
+					bulletColor: input.bulletColor,
+					iconColor: input.iconColor,
 				},
 			})
 		}),

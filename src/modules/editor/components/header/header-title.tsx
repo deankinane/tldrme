@@ -60,7 +60,7 @@ export default function HeaderTitle({
 				text={title}
 			/>
 			<EditText
-				fontStyles="text-md px-2 py-1 lg:text-2xl font-thin"
+				fontStyles={`${FgColors[subTitleColor]} text-md px-2 py-1 lg:text-2xl font-thin`}
 				onTextChanged={onSubTitleChanged}
 				text={subTitle}
 			/>
