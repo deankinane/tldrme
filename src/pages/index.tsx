@@ -1,23 +1,30 @@
 import { type NextPage } from 'next'
 import Head from 'next/head'
-import { ClientSafeProvider, getProviders, LiteralUnion, signIn, signOut, useSession } from 'next-auth/react'
+import {
+	ClientSafeProvider,
+	getProviders,
+	LiteralUnion,
+	signIn,
+	signOut,
+	useSession,
+} from 'next-auth/react'
 import React, { useCallback } from 'react'
 import { BuiltInProviderType } from 'next-auth/providers'
 import { Button } from '@/modules/common/button/button'
 import { UserWidget } from '@/modules/common/user-widget/user-widget'
 import { LinkButton } from '@/modules/common/link-button/link-button'
 interface Props {
-	providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>
+	providers: Record<
+		LiteralUnion<BuiltInProviderType, string>,
+		ClientSafeProvider
+	>
 }
 const Home: NextPage<Props> = ({ providers }) => {
 	const { data: session, status } = useSession()
 
-	const onLoginClick = useCallback(
-		() => {
-			signIn()
-		},
-		[],
-	)
+	const onLoginClick = useCallback(() => {
+		signIn()
+	}, [])
 	return (
 		<>
 			<Head>
@@ -29,25 +36,24 @@ const Home: NextPage<Props> = ({ providers }) => {
 					content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
 				></meta>
 			</Head>
-			<main className='h-full'>
-				<UserWidget className='fixed top-10 right-10' />
-				<div className="m-auto w-full px-20 lg:px-0 lg:w-2/6 flex flex-col justify-center items-center h-full">
-					<h1 className='font-bold text-5xl lg:text-7xl text-white mb-10'>tldrMe</h1>
-					<h2 className='text-white font-semibold text-xl lg:text-3xl'>You, succinctly.</h2>
-					{
-						(status === "authenticated") ?
-
-							<LinkButton
-								className='mt-32'
-								href='/editor'
-							>Edit Your Resume Now</LinkButton>
-
-							:
-							<Button
-								className='mt-32'
-								onClick={onLoginClick}>Create Your Resume Now</Button>
-
-					}
+			<main className="h-full">
+				<UserWidget className="fixed top-10 right-10" />
+				<div className="m-auto flex h-full w-full flex-col items-center justify-center px-20 lg:w-2/6 lg:px-0">
+					<h1 className="mb-10 text-5xl font-bold text-white lg:text-7xl">
+						tldrMe
+					</h1>
+					<h2 className="text-xl font-semibold text-white lg:text-3xl">
+						You, succinctly.
+					</h2>
+					{status === 'authenticated' ? (
+						<LinkButton className="mt-32" href="/editor">
+							Edit Your Resume Now
+						</LinkButton>
+					) : (
+						<Button className="mt-32" onClick={onLoginClick}>
+							Create Your Resume Now
+						</Button>
+					)}
 					{/* {Object.values(providers).map((provider) => ( */}
 					{/* 	<div key={provider.name}> */}
 					{/* 		<Button onClick={() => signIn(provider.id)}> */}
@@ -56,7 +62,6 @@ const Home: NextPage<Props> = ({ providers }) => {
 					{/* 	</div> */}
 					{/* ))} */}
 				</div>
-
 			</main>
 		</>
 	)

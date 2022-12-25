@@ -4,7 +4,10 @@ import React, { useCallback, useContext, useMemo } from 'react'
 import { ResumeContext } from '../../utils/resumeContext'
 import StyleItem from './components/style-item/style-item'
 
-export const Sidebar = () => {
+interface Props {
+	showSideMenu: boolean
+}
+export const Sidebar = ({ showSideMenu }: Props) => {
 	const { resume, updateResume } = useContext(ResumeContext)
 	const mUpdateStyles = trpc.editor.updateResumeStyle.useMutation()
 
@@ -91,7 +94,11 @@ export const Sidebar = () => {
 	)
 
 	return (
-		<div className="hidden h-full w-80 shrink-0 bg-[#00000077] xl:block">
+		<div
+			className={`${
+				showSideMenu ? 'block' : 'hidden'
+			} fixed z-10 h-full w-80 shrink-0 bg-[#100F26] xl:relative xl:block xl:bg-transparent`}
+		>
 			<div className="p-8 text-white">
 				<p className="text-lg font-semibold">Resume Styles</p>
 				<div className="my-4">

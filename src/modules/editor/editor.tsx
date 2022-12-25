@@ -10,14 +10,15 @@ import { ResumeProvider } from './utils/resumeContext'
 
 interface Props {
 	resume: ResumeModel
+	showSideMenu: boolean
 }
-export default function Editor({ resume }: Props) {
+export default function Editor({ resume, showSideMenu }: Props) {
 	const smallScreen = useSmallScreen()
 
 	return (
 		<ResumeProvider initialState={resume}>
 			<div className="flex h-full max-w-screen-2xl">
-				<Sidebar />
+				<Sidebar showSideMenu={showSideMenu} />
 				<div className="h-full grow overflow-hidden bg-white md:h-auto md:min-h-full md:overflow-y-scroll md:px-8 lg:px-16">
 					<Header />
 

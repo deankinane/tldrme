@@ -1,14 +1,24 @@
 import { UserWidget } from '@/modules/common/user-widget/user-widget'
+import { Bars3Icon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import React from 'react'
 
-export default function AppHeader() {
-	return <div className="fixed h-16 w-full bg-[#00000077] shadow-md z-50 ">
-		<div className='max-w-screen-2xl mx-auto flex items-center h-full'>
-			<Link href='/' className='grow'>
-				<p className='font-bold text-xl text-white ml-4'>tldrMe</p>
-			</Link>
-			<UserWidget className='mr-2' />
+interface Props {
+	onMenuButtonClicked: () => void
+}
+export default function AppHeader({ onMenuButtonClicked }: Props) {
+	return (
+		<div className="fixed z-50 h-16 w-full bg-[#00000077] shadow-md ">
+			<div className="mx-auto flex h-full max-w-screen-2xl items-center">
+				<Bars3Icon
+					className="ml-4 h-6 w-6 text-white xl:hidden"
+					onClick={onMenuButtonClicked}
+				></Bars3Icon>
+				<Link href="/" className="grow">
+					<p className="ml-4 text-xl font-bold text-white">tldrMe</p>
+				</Link>
+				<UserWidget className="mr-2" />
+			</div>
 		</div>
-	</div>
+	)
 }
