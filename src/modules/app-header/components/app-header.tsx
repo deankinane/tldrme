@@ -8,7 +8,7 @@ interface Props {
 }
 export default function AppHeader({ onMenuButtonClicked }: Props) {
 	return (
-		<div className="fixed z-50 h-16 w-full bg-[#00000077] shadow-md ">
+		<div className="fixed z-20 h-16 w-full bg-[#100F26] shadow-md ">
 			<div className="mx-auto flex h-full max-w-screen-2xl items-center">
 				<Bars3Icon
 					className="ml-4 h-6 w-6 text-white xl:hidden"

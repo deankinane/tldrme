@@ -97,7 +97,7 @@ export const Sidebar = ({ showSideMenu }: Props) => {
 		<div
 			className={`${
 				showSideMenu ? 'block' : 'hidden'
-			} fixed z-10 h-full w-full shrink-0 bg-[#00000099] xl:relative xl:block xl:w-80 xl:bg-transparent`}
+			} fixed z-30 h-full w-full shrink-0 bg-[#00000099] xl:relative xl:block xl:w-80 xl:bg-transparent`}
 		>
 			<div className="xl:bg-transparent` h-full w-80 bg-[#100F26] shadow-lg">
 				<div className="p-8 text-white">
