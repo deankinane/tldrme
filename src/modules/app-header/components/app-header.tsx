@@ -17,7 +17,7 @@ export default function AppHeader({ onMenuButtonClicked }: Props) {
 				<Link href="/" className="grow">
 					<p className="ml-4 text-xl font-bold text-white">tldrMe</p>
 				</Link>
-				<UserWidget className="mr-2" />
+				<UserWidget className="relative mr-2" />
 			</div>
 		</div>
 	)

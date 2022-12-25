@@ -97,20 +97,22 @@ export const Sidebar = ({ showSideMenu }: Props) => {
 		<div
 			className={`${
 				showSideMenu ? 'block' : 'hidden'
-			} fixed z-10 h-full w-80 shrink-0 bg-[#100F26] xl:relative xl:block xl:bg-transparent`}
+			} fixed z-10 h-full w-full shrink-0 bg-[#00000099] xl:relative xl:block xl:w-80 xl:bg-transparent`}
 		>
-			<div className="p-8 text-white">
-				<p className="text-lg font-semibold">Resume Styles</p>
-				<div className="my-4">
-					{styleElements.map((s) => (
-						<StyleItem
-							key={s.label}
-							onColorChanged={(c: number) => s.callback(c)}
-							initialColor={s.color}
-							label={s.label}
-							className="mt-4"
-						/>
-					))}
+			<div className="xl:bg-transparent` h-full w-80 bg-[#100F26] shadow-lg">
+				<div className="p-8 text-white">
+					<p className="text-lg font-semibold">Resume Styles</p>
+					<div className="my-4">
+						{styleElements.map((s) => (
+							<StyleItem
+								key={s.label}
+								onColorChanged={(c: number) => s.callback(c)}
+								initialColor={s.color}
+								label={s.label}
+								className="mt-4"
+							/>
+						))}
+					</div>
 				</div>
 			</div>
 		</div>

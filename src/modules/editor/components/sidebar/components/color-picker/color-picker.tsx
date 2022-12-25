@@ -65,7 +65,7 @@ export const ColorPicker = ({
 				></div>
 			</div>
 			{open ? (
-				<div className="absolute left-12 top-0 flex w-48 flex-wrap rounded-md border border-black bg-white p-2">
+				<div className="absolute ml-12 -mt-8 flex w-48 flex-wrap rounded-md bg-gray-100 p-2 shadow-lg">
 					{BgColors.map((c) => (
 						<div
 							key={c}
