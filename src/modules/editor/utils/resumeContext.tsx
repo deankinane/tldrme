@@ -20,6 +20,7 @@ const defaultResumeModel: ResumeModel = {
 		headerTitleColor: 1,
 		headerSubtitleColor: 1,
 		sectionTitleColor: 1,
+		sectionSubtitleColor: 1,
 		elementTextColor: 1,
 		bulletColor: 1,
 		iconColor: 1,
