@@ -154,6 +154,7 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 		<div className={`${dragged ? 'opacity-60' : ''}  pb-12`}>
 			<SectionTitle
 				text={model.title}
+				textColor={resume.resumeStyle.sectionTitleColor}
 				onTextChanged={onTextChanged}
 				draggable
 				onDragStart={dragStart}
@@ -170,6 +171,7 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 								key={e.id}
 								index={i}
 								element={e}
+								styles={resume.resumeStyle}
 								onElementUpdated={onElementUpdated}
 								isValidSource={validElementDropSource}
 								onItemDropped={onElementDropped}

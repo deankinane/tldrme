@@ -1,6 +1,6 @@
 import { withDropTarget } from '@/modules/common/components/withDropTarget'
 import { trpc } from '@/utils/trpc'
-import type { Element } from '@prisma/client'
+import type { Element, ResumeStyle } from '@prisma/client'
 import { ElementType } from '@prisma/client'
 import { useCallback, useContext, useState } from 'react'
 import { isMobile } from 'react-device-detect'
@@ -12,10 +12,11 @@ import TextElement from './text/text'
 
 interface Props {
 	element: Element
+	styles: ResumeStyle
 	onElementUpdated: (element: Element) => void
 	index: number
 }
-function BaseElement({ element, onElementUpdated, index }: Props) {
+function BaseElement({ element, styles, onElementUpdated, index }: Props) {
 	const { setDragData, endDrag } = useContext(DraggableContext)
 	const [dragged, setDragged] = useState(false)
 
@@ -73,6 +74,7 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 			{element.type === ElementType.SubTitle ? (
 				<SubTitleElement
 					element={element}
+					styles={styles}
 					onElementUpdated={updateElement}
 					onBlur={onElementBlur}
 				/>
@@ -83,6 +85,7 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 			{element.type === ElementType.IconText ? (
 				<IconTextElement
 					element={element}
+					styles={styles}
 					onElementUpdated={updateElement}
 					onBlur={onElementBlur}
 				/>
@@ -93,6 +96,7 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 			{element.type === ElementType.BulletText ? (
 				<BulletTextElement
 					element={element}
+					styles={styles}
 					onElementUpdated={updateElement}
 					onBlur={onElementBlur}
 				/>
@@ -103,6 +107,7 @@ function BaseElement({ element, onElementUpdated, index }: Props) {
 			{element.type === ElementType.Text ? (
 				<TextElement
 					element={element}
+					styles={styles}
 					onElementUpdated={updateElement}
 					onBlur={onElementBlur}
 				/>

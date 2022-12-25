@@ -1,11 +1,13 @@
 import { ElementType } from '@prisma/client'
 import React, { useCallback } from 'react'
 import EditText from '../../edit-text/edit-text'
+import { FgColors } from '../../sidebar/components/color-picker/color-picker'
 import type { ElementProps } from '../common/element-props'
 
 export default function TextElement({
 	element,
 	onElementUpdated,
+	styles,
 	onBlur,
 }: ElementProps) {
 	const onTextChanged = useCallback(
@@ -23,7 +25,9 @@ export default function TextElement({
 			data-testid={`element-${ElementType.Text}`}
 		>
 			<EditText
-				fontStyles="text-sm lg:text-lg"
+				fontStyles={`${
+					FgColors[styles.elementTextColor]
+				} text-sm lg:text-lg`}
 				onTextChanged={onTextChanged}
 				text={element.text}
 				className="grow"

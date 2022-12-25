@@ -100,12 +100,13 @@ model Element {
 
 model ResumeStyle {
   id                  String @id @default(cuid())
-  headerTitleColor    Int 
-  headerSubtitleColor Int
-  sectionTitleColor   Int
-  elementTextColor    Int
-  bulletColor         Int
-  iconColor           Int
+  headerTitleColor    Int  @default(1)
+  headerSubtitleColor Int @default(1)
+  sectionTitleColor   Int @default(1)
+  sectionSubtitleColor   Int @default(1)
+  elementTextColor    Int @default(1)
+  bulletColor         Int @default(1)
+  iconColor           Int @default(1)
   resume              Resume?
 }
 

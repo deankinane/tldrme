@@ -14,6 +14,7 @@ export const Sidebar = () => {
 			headerTitleColor: styles.headerTitleColor,
 			headerSubtitleColor: styles.headerSubtitleColor,
 			sectionTitleColor: styles.sectionTitleColor,
+			sectionSubtitleColor: styles.sectionSubtitleColor,
 			elementTextColor: styles.elementTextColor,
 			bulletColor: styles.bulletColor,
 			iconColor: styles.iconColor,
@@ -36,6 +37,51 @@ export const Sidebar = () => {
 				color: resume.resumeStyle.headerSubtitleColor,
 				callback: (c: number) => {
 					resume.resumeStyle.headerSubtitleColor = c
+					updateResume(resume)
+					updateStyles(resume.resumeStyle)
+				},
+			},
+			{
+				label: 'Section Titles',
+				color: resume.resumeStyle.sectionTitleColor,
+				callback: (c: number) => {
+					resume.resumeStyle.sectionTitleColor = c
+					updateResume(resume)
+					updateStyles(resume.resumeStyle)
+				},
+			},
+			{
+				label: 'Section Subtitle',
+				color: resume.resumeStyle.sectionSubtitleColor,
+				callback: (c: number) => {
+					resume.resumeStyle.sectionSubtitleColor = c
+					updateResume(resume)
+					updateStyles(resume.resumeStyle)
+				},
+			},
+			{
+				label: 'Element Text',
+				color: resume.resumeStyle.elementTextColor,
+				callback: (c: number) => {
+					resume.resumeStyle.elementTextColor = c
+					updateResume(resume)
+					updateStyles(resume.resumeStyle)
+				},
+			},
+			{
+				label: 'Bullet Points',
+				color: resume.resumeStyle.bulletColor,
+				callback: (c: number) => {
+					resume.resumeStyle.bulletColor = c
+					updateResume(resume)
+					updateStyles(resume.resumeStyle)
+				},
+			},
+			{
+				label: 'Icons',
+				color: resume.resumeStyle.iconColor,
+				callback: (c: number) => {
+					resume.resumeStyle.iconColor = c
 					updateResume(resume)
 					updateStyles(resume.resumeStyle)
 				},
