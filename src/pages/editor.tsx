@@ -16,10 +16,15 @@ export default function EditorPage({ resumeModel }: Props) {
 			<AppHeader
 				onMenuButtonClicked={() => setShowSideMenu((x) => !x)}
 			></AppHeader>
-			<div className="fixed top-16 bottom-0 left-0 right-0 mx-auto max-w-screen-2xl">
-				<DraggableProvider>
-					<Editor resume={resumeModel} showSideMenu={showSideMenu} />
-				</DraggableProvider>
+			<div className="fixed top-16 bottom-0 left-0 right-0 bg-white xl:top-0">
+				<div className="fixed top-16 bottom-0 left-0 right-0 mx-auto max-w-screen-2xl xl:top-0">
+					<DraggableProvider>
+						<Editor
+							resume={resumeModel}
+							showSideMenu={showSideMenu}
+						/>
+					</DraggableProvider>
+				</div>
 			</div>
 		</>
 	)

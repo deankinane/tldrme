@@ -58,7 +58,7 @@ export const ColorPicker = ({
 
 	return (
 		<div className={`${props.className} relative`} {...props}>
-			<div className="rounded-full bg-white p-1">
+			<div className="rounded-full border border-gray-300 bg-white p-1">
 				<div
 					className={`${color} h-6 w-6 rounded-full`}
 					onClick={() => setOpen(!open)}

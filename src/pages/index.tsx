@@ -47,11 +47,11 @@ const Home: NextPage<Props> = ({ providers }) => {
 					</h2>
 					{status === 'authenticated' ? (
 						<LinkButton className="mt-32" href="/editor">
-							Edit Your Resume Now
+							Edit Your Resume
 						</LinkButton>
 					) : (
 						<Button className="mt-32" onClick={onLoginClick}>
-							Create Your Resume Now
+							Create Your Resume
 						</Button>
 					)}
 					{/* {Object.values(providers).map((provider) => ( */}

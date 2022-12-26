@@ -1,5 +1,6 @@
 import { trpc } from '@/utils/trpc'
 import { ResumeStyle } from '@prisma/client'
+import Link from 'next/link'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { ResumeContext } from '../../utils/resumeContext'
 import StyleItem from './components/style-item/style-item'
@@ -97,10 +98,15 @@ export const Sidebar = ({ showSideMenu }: Props) => {
 		<div
 			className={`${
 				showSideMenu ? 'block' : 'hidden'
-			} fixed z-30 h-full w-full shrink-0 bg-[#00000099] xl:relative xl:block xl:w-80 xl:bg-transparent`}
+			} fixed z-30 h-full w-full shrink-0 bg-[#00000099] xl:static xl:block xl:w-80 xl:bg-transparent`}
 		>
-			<div className="xl:bg-transparent` h-full w-80 bg-[#100F26] shadow-lg">
-				<div className="p-8 text-white">
+			<div className="h-full w-80 bg-[#100F26] text-white shadow-lg xl:fixed xl:left-0">
+				<div className="p-8">
+					<Link href="/">
+						<p className="mb-8 text-2xl font-bold text-white">
+							tldrMe
+						</p>
+					</Link>
 					<p className="text-lg font-semibold">Resume Styles</p>
 					<div className="my-4">
 						{styleElements.map((s) => (
