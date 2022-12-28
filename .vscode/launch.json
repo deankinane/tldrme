@@ -8,18 +8,6 @@
 			"command": "npm run dev"
 		},
 		{
-			"name": "Next.js: debug client-side - firefox",
-			"type": "firefox",
-			"request": "launch",
-			"url": "http://localhost:3000",
-			"pathMappings": [
-				{
-					"url": "webpack://_n_e",
-					"path": "${workspaceFolder}"
-				}
-			]
-		},
-		{
 			"name": "Next.js: debug client-side - chrome",
 			"type": "chrome",
 			"request": "launch",

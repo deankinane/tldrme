@@ -22,6 +22,7 @@ export default function EditorPage({ resumeModel }: Props) {
 						<Editor
 							resume={resumeModel}
 							showSideMenu={showSideMenu}
+							closeSideMenu={() => setShowSideMenu(false)}
 						/>
 					</DraggableProvider>
 				</div>

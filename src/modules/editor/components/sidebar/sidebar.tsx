@@ -7,10 +7,21 @@ import StyleItem from './components/style-item/style-item'
 
 interface Props {
 	showSideMenu: boolean
+	closeSideMenu: () => void
 }
-export const Sidebar = ({ showSideMenu }: Props) => {
+export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 	const { resume, updateResume } = useContext(ResumeContext)
 	const mUpdateStyles = trpc.editor.updateResumeStyle.useMutation()
+
+	const closeSideBar = useCallback(
+		(e: React.MouseEvent) => {
+			e.preventDefault()
+			if (e.target === e.currentTarget) {
+				closeSideMenu()
+			}
+		},
+		[closeSideMenu]
+	)
 
 	const updateStyles = useCallback((styles: ResumeStyle) => {
 		mUpdateStyles.mutate({
@@ -99,6 +110,7 @@ export const Sidebar = ({ showSideMenu }: Props) => {
 			className={`${
 				showSideMenu ? 'block' : 'hidden'
 			} fixed z-30 h-full w-full shrink-0 bg-[#00000099] xl:static xl:block xl:w-80 xl:bg-transparent`}
+			onClick={closeSideBar}
 		>
 			<div className="h-full w-80 bg-[#100F26] text-white shadow-lg xl:fixed xl:left-0">
 				<div className="p-8">
