@@ -11,7 +11,7 @@ export default function IconPicker({ open, onIconClick }: Props) {
 	const icons = useMemo(
 		() =>
 			search.length === 0
-				? PossibleIconsArray.slice(0, 20)
+				? PossibleIconsArray.slice(0, 24)
 				: PossibleIconsArray.filter(
 						(i) =>
 							i.toLowerCase().indexOf(search.toLowerCase()) >= 0
@@ -48,6 +48,11 @@ export default function IconPicker({ open, onIconClick }: Props) {
 								/>
 							</div>
 						))}
+						{icons.length === 0 ? (
+							<p className="text-xs font-light">No icons found</p>
+						) : (
+							<></>
+						)}
 					</div>
 				</div>
 			) : (

@@ -23,7 +23,7 @@ export default function Editor({ resume, showSideMenu, closeSideMenu }: Props) {
 					showSideMenu={showSideMenu}
 					closeSideMenu={closeSideMenu}
 				/>
-				<div className="h-full grow overflow-hidden bg-white md:h-auto md:min-h-full md:overflow-y-scroll md:px-8 lg:px-16">
+				<div className="h-full grow overflow-hidden bg-white md:h-auto md:min-h-full md:overflow-visible md:px-8 lg:px-16">
 					<Header />
 
 					<div
