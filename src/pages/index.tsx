@@ -37,7 +37,7 @@ const Home: NextPage<Props> = ({ providers }) => {
 				></meta>
 			</Head>
 			<main className="h-full ">
-				<UserWidget className="fixed top-10 right-10" />
+				<UserWidget collapsed className="fixed top-10 right-10" />
 				<div className="m-auto flex h-full w-full flex-col items-center justify-center px-20 lg:w-2/6 lg:px-0">
 					<h1 className="mb-10 text-5xl font-bold text-white lg:text-7xl">
 						tldrMe

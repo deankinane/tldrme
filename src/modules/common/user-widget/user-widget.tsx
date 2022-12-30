@@ -1,40 +1,20 @@
-import {
-	ArrowLeftOnRectangleIcon,
-	UserIcon,
-	XCircleIcon,
-	XMarkIcon,
-} from '@heroicons/react/24/solid'
+import { UserIcon } from '@heroicons/react/24/solid'
 import { useSession } from 'next-auth/react'
-import React, { useState } from 'react'
+import React from 'react'
 
-export const UserWidget = (props: React.ComponentProps<'div'>) => {
+export const UserWidget = ({ ...props }: React.ComponentProps<'div'>) => {
 	const { data: session, status } = useSession()
-	const [open, setOpen] = useState(false)
 
 	return status === 'authenticated' ? (
 		<div
 			{...props}
-			className={`${props.className} flex items-center rounded-3xl bg-[#100F26] p-2 text-sm font-thin text-white`}
+			className={`${props.className} mb-4
+			flex items-center rounded-3xl bg-indigo-600 p-1 pr-3 text-sm font-thin text-white shadow-sm`}
 		>
-			<div className="rounded-full" onClick={() => setOpen(true)}>
-				<UserIcon className="w-5" />
+			<div className="rounded-full bg-indigo-900 p-2">
+				<UserIcon className="w-4" />
 			</div>
-			{open ? (
-				<div className="absolute -right-2 top-10 z-50 flex items-center rounded-md bg-[#100F26] p-2 pl-4 shadow-lg">
-					<p className="grow">{session.user?.email}</p>
-					<div className="ml-4 rounded-full bg-indigo-600 p-2">
-						<ArrowLeftOnRectangleIcon className="w-5" />
-					</div>
-					<div
-						className="ml-2 rounded-full bg-indigo-600 p-2"
-						onClick={() => setOpen(false)}
-					>
-						<XMarkIcon className="w-5" />
-					</div>
-				</div>
-			) : (
-				<></>
-			)}
+			<p className="grow pl-4">{session.user?.email}</p>
 		</div>
 	) : (
 		<></>

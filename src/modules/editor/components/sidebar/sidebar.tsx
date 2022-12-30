@@ -1,3 +1,4 @@
+import { UserWidget } from '@/modules/common/user-widget/user-widget'
 import { trpc } from '@/utils/trpc'
 import { ResumeStyle } from '@prisma/client'
 import Link from 'next/link'
@@ -114,11 +115,12 @@ export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 		>
 			<div className="h-full w-80 bg-[#100F26] text-white shadow-lg xl:fixed xl:left-0">
 				<div className="p-8">
-					<Link href="/">
+					<Link href="/" className="hidden xl:block">
 						<p className="mb-8 text-2xl font-bold text-white">
 							tldrMe
 						</p>
 					</Link>
+					<UserWidget className="mb-8" />
 					<p className="text-lg font-semibold">Resume Styles</p>
 					<div className="my-4">
 						{styleElements.map((s) => (
