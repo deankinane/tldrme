@@ -1,13 +1,14 @@
 import { ElementType } from '@prisma/client'
 import type { PossibleIcons } from 'heroicons-lookup'
 import { lookupIcon } from 'heroicons-lookup'
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import EditText from '../../edit-text/edit-text'
 import {
 	BgColors,
 	FgColors,
 } from '../../sidebar/components/color-picker/color-picker'
 import type { ElementProps } from '../common/element-props'
+import IconPicker from './icon-picker'
 
 export default function IconTextElement({
 	element,
@@ -15,7 +16,11 @@ export default function IconTextElement({
 	onElementUpdated,
 	onBlur,
 }: ElementProps) {
-	const Icon = lookupIcon('FolderIcon' as PossibleIcons, 'solid')
+	const Icon = useMemo(
+		() => lookupIcon(element.icon as PossibleIcons, 'solid'),
+		[element.icon]
+	)
+	const [open, setOpen] = useState(false)
 
 	const onTextChanged = useCallback(
 		(text: string) => {
@@ -26,26 +31,46 @@ export default function IconTextElement({
 		[element, onElementUpdated]
 	)
 
+	const onIconChanged = useCallback(
+		(icon: PossibleIcons) => {
+			element.icon = icon
+			onElementUpdated(element)
+			setOpen(false)
+		},
+		[element, onElementUpdated]
+	)
+
 	return (
-		<div className="flex" data-testid={`element-${ElementType.IconText}`}>
-			<div>
-				<Icon
-					className={`${
-						FgColors[styles.iconColor]
-					} mx-2 w-5 pt-1 lg:w-6 lg:pt-2`}
+		<>
+			<div
+				className="flex"
+				data-testid={`element-${ElementType.IconText}`}
+			>
+				<div onClick={() => setOpen((o) => !o)}>
+					<Icon
+						className={`${
+							FgColors[styles.iconColor]
+						} mx-2 w-5 pt-1 lg:w-6 lg:pt-2`}
+					/>
+				</div>
+
+				<EditText
+					fontStyles={`${
+						FgColors[styles.elementTextColor]
+					} text-sm lg:text-lg`}
+					onTextChanged={onTextChanged}
+					text={element.text}
+					className="grow"
+					multiline
+					onBlur={onBlur}
 				/>
 			</div>
 
-			<EditText
-				fontStyles={`${
-					FgColors[styles.elementTextColor]
-				} text-sm lg:text-lg`}
-				onTextChanged={onTextChanged}
-				text={element.text}
-				className="grow"
-				multiline
-				onBlur={onBlur}
-			/>
-		</div>
+			{open ? (
+				<IconPicker open={open} onIconClick={onIconChanged} />
+			) : (
+				<></>
+			)}
+		</>
 	)
 }

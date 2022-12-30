@@ -125,7 +125,7 @@ export const editorRouter = router({
 					order: input.order,
 					type: input.type,
 					text: 'New Element',
-					icon: input.type === 'IconText' ? 'Documenticon' : '',
+					icon: input.type === 'IconText' ? 'FolderIcon' : '',
 				},
 			})
 		}),

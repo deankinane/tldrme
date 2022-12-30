@@ -27,6 +27,7 @@ function BaseElement({ element, styles, onElementUpdated, index }: Props) {
 			mUpdateElement.mutate({
 				elementId: el.id,
 				text: el.text,
+				icon: el.icon,
 			})
 
 			onElementUpdated(el)
