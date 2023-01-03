@@ -1,10 +1,10 @@
 import { ElementType } from '@prisma/client'
 import { z } from 'zod'
 import { prisma } from '../../db/client'
-import { router, publicProcedure, protectedProcedure } from '../trpc'
+import { router, protectedProcedure } from '../trpc'
 
 export const editorRouter = router({
-	updateResumeTitle: publicProcedure
+	updateResumeTitle: protectedProcedure
 		.input(
 			z.object({
 				resumeId: z.string(),
@@ -23,7 +23,7 @@ export const editorRouter = router({
 				},
 			})
 		}),
-	updateProfilePicture: publicProcedure
+	updateProfilePicture: protectedProcedure
 		.input(
 			z.object({
 				resumeId: z.string(),
@@ -40,7 +40,7 @@ export const editorRouter = router({
 				},
 			})
 		}),
-	addSection: publicProcedure
+	addSection: protectedProcedure
 		.input(
 			z.object({
 				resumeId: z.string(),
@@ -60,7 +60,7 @@ export const editorRouter = router({
 
 			return newSection
 		}),
-	updateSectionTitle: publicProcedure
+	updateSectionTitle: protectedProcedure
 		.input(
 			z.object({
 				sectionId: z.string(),
@@ -77,7 +77,7 @@ export const editorRouter = router({
 				},
 			})
 		}),
-	reorderSection: publicProcedure
+	reorderSection: protectedProcedure
 		.input(
 			z.array(
 				z.object({
@@ -97,7 +97,7 @@ export const editorRouter = router({
 				}
 			}
 		}),
-	removeSection: publicProcedure
+	removeSection: protectedProcedure
 		.input(
 			z.object({
 				sectionId: z.string(),
@@ -110,7 +110,7 @@ export const editorRouter = router({
 				},
 			})
 		}),
-	addElement: publicProcedure
+	addElement: protectedProcedure
 		.input(
 			z.object({
 				sectionId: z.string(),
@@ -129,7 +129,7 @@ export const editorRouter = router({
 				},
 			})
 		}),
-	updateElement: publicProcedure
+	updateElement: protectedProcedure
 		.input(
 			z.object({
 				elementId: z.string(),
@@ -148,7 +148,7 @@ export const editorRouter = router({
 				},
 			})
 		}),
-	removeElement: publicProcedure
+	removeElement: protectedProcedure
 		.input(
 			z.object({
 				elementId: z.string(),
@@ -161,7 +161,7 @@ export const editorRouter = router({
 				},
 			})
 		}),
-	reorderElement: publicProcedure
+	reorderElement: protectedProcedure
 		.input(
 			z.array(
 				z.object({
@@ -207,6 +207,27 @@ export const editorRouter = router({
 					elementTextColor: input.elementTextColor,
 					bulletColor: input.bulletColor,
 					iconColor: input.iconColor,
+				},
+			})
+		}),
+	updateResumeSlug: protectedProcedure
+		.input(
+			z.object({
+				id: z.string(),
+				slug: z
+					.string()
+					.min(4)
+					.max(20)
+					.regex(/[a-zA-Z0-9\-]{4,20}/),
+			})
+		)
+		.mutation(async ({ input }) => {
+			await prisma.resume.update({
+				where: {
+					id: input.id,
+				},
+				data: {
+					urlSlug: input.slug,
 				},
 			})
 		}),

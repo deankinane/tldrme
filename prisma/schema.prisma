@@ -76,6 +76,7 @@ model Resume {
   user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   resumeStyleId  String       @unique
   resumeStyle    ResumeStyle   @relation(fields: [resumeStyleId], references: [id], onDelete: Cascade)
+  urlSlug           String?
 }
 
 model Section {
