@@ -14,6 +14,7 @@ const defaultResumeModel: ResumeModel = {
 	profilePicUrl: '',
 	sections: [],
 	userId: '',
+	urlSlug: '',
 	resumeStyleId: '',
 	resumeStyle: {
 		id: '',
@@ -21,6 +22,7 @@ const defaultResumeModel: ResumeModel = {
 		headerSubtitleColor: 1,
 		sectionTitleColor: 1,
 		sectionSubtitleColor: 1,
+		infoTextColor: 1,
 		elementTextColor: 1,
 		bulletColor: 1,
 		iconColor: 1,

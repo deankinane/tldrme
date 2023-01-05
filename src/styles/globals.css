@@ -28,7 +28,7 @@ textarea {
 	}
 
 	.el-subtitle {
-		@apply mt-2 text-base font-semibold lg:text-lg;
+		@apply mt-3 text-base font-semibold lg:text-lg;
 	}
 
 	.el-bullet-text {
@@ -36,6 +36,6 @@ textarea {
 	}
 
 	.el:first-of-type {
-		@apply mt-2;
+		@apply mt-3;
 	}
 }
