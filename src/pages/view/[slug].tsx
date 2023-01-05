@@ -7,7 +7,6 @@ interface Props {
 	resumeModel: ResumeModel
 }
 export default function ViewerPage({ resumeModel }: Props) {
-	const [showSideMenu, setShowSideMenu] = useState(false)
 	return (
 		<>
 			<div className="fixed top-16 bottom-0 left-0 right-0 bg-white md:overflow-y-auto xl:top-0">
@@ -23,7 +22,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	let slug = 'xxx'
 	if (params && params.slug) slug = params.slug as string
 
-	let resumeModel = await prisma?.resume.findFirst({
+	const resumeModel = await prisma?.resume.findFirst({
 		where: {
 			urlSlug: slug,
 		},
@@ -46,7 +45,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	let slugs = await prisma?.resume.findMany({
+	const slugs = await prisma?.resume.findMany({
 		where: {
 			NOT: {
 				urlSlug: {
