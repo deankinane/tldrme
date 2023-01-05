@@ -108,6 +108,7 @@ model ResumeStyle {
   elementTextColor    Int @default(1)
   bulletColor         Int @default(1)
   iconColor           Int @default(1)
+  infoTextColor      Int @default(1)     
   resume              Resume?
 }
 
@@ -116,4 +117,5 @@ enum ElementType {
   SubTitle
   BulletText
   Text
+  InfoText
 }
