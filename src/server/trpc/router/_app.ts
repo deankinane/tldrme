@@ -1,10 +1,10 @@
 import { router } from '../trpc'
-import { authRouter } from './auth'
 import { editorRouter } from './editor'
+import { viewerRouter } from './viewer'
 
 export const appRouter = router({
 	editor: editorRouter,
-	// auth: authRouter,
+	viewer: viewerRouter,
 })
 
 // export type definition of API

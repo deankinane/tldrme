@@ -1,4 +1,5 @@
 import { ElementType } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { prisma } from '../../db/client'
 import { router, protectedProcedure } from '../trpc'
@@ -222,6 +223,20 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ input }) => {
+			const check = await prisma.resume.findFirst({
+				where: {
+					urlSlug: input.slug,
+				},
+			})
+
+			if (check) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message:
+						'That slug is already in use, please choose another',
+				})
+			}
+
 			await prisma.resume.update({
 				where: {
 					id: input.id,

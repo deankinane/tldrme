@@ -15,7 +15,7 @@ export default function StyleItem({
 }: Props) {
 	return (
 		<div {...props} className={`${props.className} flex`}>
-			<div className="grow">{label}</div>
+			<div className="grow text-sm">{label}</div>
 			<ColorPicker
 				initialColor={initialColor}
 				className="flex-none"

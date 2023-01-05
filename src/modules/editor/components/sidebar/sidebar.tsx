@@ -4,6 +4,7 @@ import { ResumeStyle } from '@prisma/client'
 import Link from 'next/link'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { ResumeContext } from '../../utils/resumeContext'
+import SlugEditor from './components/slug-editor/slug-editor'
 import StyleItem from './components/style-item/style-item'
 
 interface Props {
@@ -142,6 +143,7 @@ export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 							/>
 						))}
 					</div>
+					<SlugEditor resume={resume} />
 				</div>
 			</div>
 		</div>
