@@ -58,7 +58,7 @@ export const ColorPicker = ({
 
 	return (
 		<div className={`${props.className} relative`} {...props}>
-			<div className="rounded-full border border-gray-300 bg-white p-1">
+			<div className="cursor-pointer rounded-full border border-gray-300 bg-white p-1">
 				<div
 					className={`${color} h-6 w-6 rounded-full`}
 					onClick={() => setOpen(!open)}
@@ -68,7 +68,7 @@ export const ColorPicker = ({
 				<>
 					<div
 						className="fixed top-0 bottom-0 left-0 right-0 z-10 bg-white opacity-30 sm:opacity-0"
-						onClick={() => setOpen(!open)}
+						onClick={() => setOpen(false)}
 					></div>
 					<div className="fixed top-1/3 left-1/2 z-20 -mt-8 -ml-24 flex w-48 flex-wrap rounded-md bg-gray-100 p-2 shadow-lg sm:absolute sm:ml-12 sm:[top:unset] sm:[left:unset]">
 						{BgColors.map((c) => (
@@ -77,7 +77,7 @@ export const ColorPicker = ({
 								onClick={() => onColorClicked(c)}
 								className={`${
 									c === color ? '!border-slate-400' : ''
-								} m-1 rounded-full border border-white bg-white p-1`}
+								} m-1 cursor-pointer rounded-full border border-white bg-white p-1`}
 							>
 								<div
 									className={`${c} h-6 w-6 rounded-full`}

@@ -40,7 +40,7 @@ export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 	const styleElements = useMemo(
 		() => [
 			{
-				label: 'Name',
+				label: 'Header Title',
 				color: resume.resumeStyle.headerTitleColor,
 				callback: (c: number) => {
 					resume.resumeStyle.headerTitleColor = c
@@ -49,7 +49,7 @@ export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 				},
 			},
 			{
-				label: 'Job Title',
+				label: 'Header Subtitle',
 				color: resume.resumeStyle.headerSubtitleColor,
 				callback: (c: number) => {
 					resume.resumeStyle.headerSubtitleColor = c
@@ -85,7 +85,7 @@ export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 				},
 			},
 			{
-				label: 'Element Text',
+				label: 'Primary Text',
 				color: resume.resumeStyle.elementTextColor,
 				callback: (c: number) => {
 					resume.resumeStyle.elementTextColor = c
@@ -130,7 +130,7 @@ export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 						</p>
 					</Link>
 					<UserWidget className="mb-8" />
-					<p className="text-lg font-semibold">Resume Styles</p>
+					<p className="text-lg font-semibold">Resume Colours</p>
 					<div className="my-4">
 						{styleElements.map((s) => (
 							<StyleItem
