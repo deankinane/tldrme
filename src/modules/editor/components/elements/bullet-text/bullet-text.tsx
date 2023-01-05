@@ -29,14 +29,11 @@ export default function BulletTextElement({
 
 	return (
 		<div
-			className=" flex"
+			className="el-bullet-text flex"
 			data-testid={`element-${ElementType.BulletText}`}
 		>
 			<div>
-				<svg
-					viewBox="0 0 20 20"
-					className="mx-2 w-5 pt-1 lg:w-6 lg:pt-2"
-				>
+				<svg viewBox="0 0 20 20" className="mx-2 w-3 pt-2 lg:w-5">
 					<circle
 						cx={10}
 						cy={10}
@@ -49,9 +46,7 @@ export default function BulletTextElement({
 			</div>
 
 			<EditText
-				fontStyles={`${
-					FgColors[styles.elementTextColor]
-				} text-sm lg:text-lg`}
+				fontStyles={`${FgColors[styles.elementTextColor]} `}
 				onTextChanged={onTextChanged}
 				text={element.text}
 				className="grow"

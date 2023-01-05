@@ -18,3 +18,24 @@ input {
 textarea {
 	letter-spacing: 1px;
 }
+
+@layer components {
+	.el {
+	}
+
+	.el-title {
+		@apply text-lg font-medium lg:text-2xl;
+	}
+
+	.el-subtitle {
+		@apply mt-2 text-base font-semibold lg:text-lg;
+	}
+
+	.el-bullet-text {
+		@apply text-sm lg:text-base;
+	}
+
+	.el:first-of-type {
+		@apply mt-2;
+	}
+}

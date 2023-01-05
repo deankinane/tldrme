@@ -48,6 +48,7 @@ export const withDropTarget = <P extends object>(
 				onDragLeave={onDragLeave}
 				onDrop={onDrop}
 				onDragOver={onDragOver}
+				className="el"
 			>
 				<Component
 					{...(props as P)}

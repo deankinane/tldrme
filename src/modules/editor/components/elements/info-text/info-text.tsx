@@ -20,14 +20,11 @@ export default function InfoTextElement({
 	)
 
 	return (
-		<div
-			className="mb-2 flex "
-			data-testid={`element-${ElementType.InfoText}`}
-		>
+		<div className="flex" data-testid={`element-${ElementType.InfoText}`}>
 			<EditText
 				fontStyles={`${
-					FgColors[styles.elementTextColor]
-				} text-xs lg:text-sm`}
+					FgColors[styles.infoTextColor]
+				} text-xs lg:text-sm font-semibold`}
 				onTextChanged={onTextChanged}
 				text={element.text}
 				className="grow"

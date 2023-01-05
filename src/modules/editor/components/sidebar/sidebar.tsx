@@ -76,6 +76,15 @@ export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 				},
 			},
 			{
+				label: 'Info Text',
+				color: resume.resumeStyle.infoTextColor,
+				callback: (c: number) => {
+					resume.resumeStyle.infoTextColor = c
+					updateResume(resume)
+					updateStyles(resume.resumeStyle)
+				},
+			},
+			{
 				label: 'Element Text',
 				color: resume.resumeStyle.elementTextColor,
 				callback: (c: number) => {

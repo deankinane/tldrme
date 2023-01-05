@@ -18,7 +18,7 @@ export default function SectionTitle({
 }: Props) {
 	return (
 		<EditText
-			fontStyles={`${FgColors[textColor]} text-lg lg:text-2xl font-medium text-indigo-800 p-2`}
+			fontStyles={`${FgColors[textColor]} el-title`}
 			text={text}
 			onTextChanged={onTextChanged}
 			onBlur={onBlur}

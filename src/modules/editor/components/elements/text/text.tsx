@@ -24,7 +24,7 @@ export default function TextElement({
 			<EditText
 				fontStyles={`${
 					FgColors[styles.elementTextColor]
-				} text-sm lg:text-lg`}
+				} text-sm lg:text-base`}
 				onTextChanged={onTextChanged}
 				text={element.text}
 				className="grow"

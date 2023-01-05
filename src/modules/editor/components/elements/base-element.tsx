@@ -7,6 +7,7 @@ import { isMobile } from 'react-device-detect'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 import BulletTextElement from './bullet-text/bullet-text'
 import IconTextElement from './icon-text/icon-text'
+import InfoTextElement from './info-text/info-text'
 import SubTitleElement from './subtitle-element/subtitle-element'
 import TextElement from './text/text'
 
@@ -107,6 +108,17 @@ function BaseElement({ element, styles, onElementUpdated, index }: Props) {
 
 			{element.type === ElementType.Text ? (
 				<TextElement
+					element={element}
+					styles={styles}
+					onElementUpdated={updateElement}
+					onBlur={onElementBlur}
+				/>
+			) : (
+				<></>
+			)}
+
+			{element.type === ElementType.InfoText ? (
+				<InfoTextElement
 					element={element}
 					styles={styles}
 					onElementUpdated={updateElement}

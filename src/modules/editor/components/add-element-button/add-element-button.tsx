@@ -11,6 +11,10 @@ const buttonList = [
 		type: ElementType.SubTitle,
 	},
 	{
+		text: 'Info Text',
+		type: ElementType.InfoText,
+	},
+	{
 		text: 'Icon Text',
 		type: ElementType.IconText,
 	},

@@ -23,7 +23,7 @@ export default function SubTitleElement({
 			<EditText
 				fontStyles={`${
 					FgColors[styles.sectionSubtitleColor]
-				} text-md lg:text-xl p-2 mt-2 font-semibold`}
+				} el-subtitle`}
 				onTextChanged={onTextChanged}
 				text={element.text}
 				onBlur={onBlur}

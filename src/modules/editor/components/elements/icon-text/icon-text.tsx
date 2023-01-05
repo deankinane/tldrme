@@ -43,21 +43,21 @@ export default function IconTextElement({
 	return (
 		<>
 			<div
-				className="flex"
+				className="mb-2 flex"
 				data-testid={`element-${ElementType.IconText}`}
 			>
 				<div onClick={() => setOpen((o) => !o)}>
 					<Icon
 						className={`${
 							FgColors[styles.iconColor]
-						} mx-2 w-5 pt-1 lg:w-6 lg:pt-2`}
+						} mx-2 w-5 pt-1 lg:w-6 lg:pt-1`}
 					/>
 				</div>
 
 				<EditText
 					fontStyles={`${
 						FgColors[styles.elementTextColor]
-					} text-sm lg:text-lg`}
+					} text-sm lg:text-base`}
 					onTextChanged={onTextChanged}
 					text={element.text}
 					className="grow"
@@ -67,7 +67,11 @@ export default function IconTextElement({
 			</div>
 
 			{open ? (
-				<IconPicker open={open} onIconClick={onIconChanged} />
+				<IconPicker
+					open={open}
+					onIconClick={onIconChanged}
+					closePicker={() => setOpen(false)}
+				/>
 			) : (
 				<></>
 			)}
