@@ -23,7 +23,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateProfilePicture: protectedProcedure
 		.input(
@@ -42,7 +42,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	addSection: protectedProcedure
 		.input(
@@ -70,7 +70,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 			return newSection
 		}),
 	updateSectionTitle: protectedProcedure
@@ -98,7 +98,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	reorderSection: protectedProcedure
 		.input(
@@ -130,7 +130,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	removeSection: protectedProcedure
 		.input(
@@ -153,7 +153,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	addElement: protectedProcedure
 		.input(
@@ -190,7 +190,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 
 			return element
 		}),
@@ -229,7 +229,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	removeElement: protectedProcedure
 		.input(
@@ -260,7 +260,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	reorderElement: protectedProcedure
 		.input(
@@ -300,7 +300,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateResumeStyle: protectedProcedure
 		.input(
@@ -339,7 +339,7 @@ export const editorRouter = router({
 				},
 			})
 			if (resume !== null && resume.urlSlug !== null)
-				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateResumeSlug: protectedProcedure
 		.input(
@@ -375,6 +375,6 @@ export const editorRouter = router({
 					urlSlug: input.slug,
 				},
 			})
-			ctx.res.revalidate(`/view/${input.slug}`)
+			await ctx.res.revalidate(`/view/${input.slug}`)
 		}),
 })
