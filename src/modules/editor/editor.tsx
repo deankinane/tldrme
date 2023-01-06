@@ -38,7 +38,12 @@ export default function Editor({ resume, showSideMenu, closeSideMenu }: Props) {
 								smallScreen ? 'snap-center' : ''
 							}`}
 						>
-							<EditorColumn columnIndex={0} />
+							<EditorColumn
+								columnIndex={0}
+								initialSections={resume.sections.filter(
+									(s) => s.columnIndex === 0
+								)}
+							/>
 						</div>
 
 						<div
@@ -46,7 +51,12 @@ export default function Editor({ resume, showSideMenu, closeSideMenu }: Props) {
 								smallScreen ? 'w-full shrink-0 snap-center' : ''
 							}`}
 						>
-							<EditorColumn columnIndex={1} />
+							<EditorColumn
+								columnIndex={1}
+								initialSections={resume.sections.filter(
+									(s) => s.columnIndex === 1
+								)}
+							/>
 						</div>
 					</div>
 				</div>

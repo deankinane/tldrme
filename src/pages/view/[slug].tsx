@@ -63,5 +63,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
 			slug: s.urlSlug === null ? '' : s.urlSlug,
 		},
 	}))
-	return { paths, fallback: false }
+	return { paths, fallback: 'blocking' }
 }

@@ -13,7 +13,7 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const resume = await ctx.prisma.resume.update({
+			await ctx.prisma.resume.update({
 				where: {
 					id: input.resumeId,
 				},
@@ -22,8 +22,6 @@ export const editorRouter = router({
 					headerSubtitle: input.subTitle,
 				},
 			})
-			if (resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateProfilePicture: protectedProcedure
 		.input(
@@ -33,7 +31,7 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const resume = await ctx.prisma.resume.update({
+			await ctx.prisma.resume.update({
 				where: {
 					id: input.resumeId,
 				},
@@ -41,8 +39,6 @@ export const editorRouter = router({
 					profilePicUrl: input.base64,
 				},
 			})
-			if (resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	addSection: protectedProcedure
 		.input(
@@ -53,7 +49,7 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const newSection = await ctx.prisma.section.create({
+			return await ctx.prisma.section.create({
 				data: {
 					columnIndex: input.columnIndex,
 					resumeId: input.resumeId,
@@ -61,17 +57,6 @@ export const editorRouter = router({
 					title: 'New Section',
 				},
 			})
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					id: input.resumeId,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
-			return newSection
 		}),
 	updateSectionTitle: protectedProcedure
 		.input(
@@ -81,7 +66,7 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const section = await ctx.prisma.section.update({
+			await ctx.prisma.section.update({
 				where: {
 					id: input.sectionId,
 				},
@@ -89,16 +74,6 @@ export const editorRouter = router({
 					title: input.title,
 				},
 			})
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					id: section.resumeId,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	reorderSection: protectedProcedure
 		.input(
@@ -110,27 +85,15 @@ export const editorRouter = router({
 			)
 		)
 		.mutation(async ({ ctx, input }) => {
-			let resumeId = ''
 			for (let i = 0; i < input.length; i++) {
 				const s = input[i]
 				if (s) {
-					const section = await ctx.prisma.section.update({
+					await ctx.prisma.section.update({
 						where: { id: s.sectionId },
 						data: { order: s.newOrder },
 					})
-					resumeId = section.resumeId
 				}
 			}
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					id: resumeId,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	removeSection: protectedProcedure
 		.input(
@@ -139,21 +102,11 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const section = await ctx.prisma.section.delete({
+			await ctx.prisma.section.delete({
 				where: {
 					id: input.sectionId,
 				},
 			})
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					id: section.resumeId,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	addElement: protectedProcedure
 		.input(
@@ -164,7 +117,7 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const element = await ctx.prisma.element.create({
+			return await ctx.prisma.element.create({
 				data: {
 					sectionId: input.sectionId,
 					order: input.order,
@@ -173,26 +126,6 @@ export const editorRouter = router({
 					icon: input.type === 'IconText' ? 'FolderIcon' : '',
 				},
 			})
-			const section = await ctx.prisma.section.findUnique({
-				where: {
-					id: element.sectionId,
-				},
-				select: {
-					resumeId: true,
-				},
-			})
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					id: section?.resumeId,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
-
-			return element
 		}),
 	updateElement: protectedProcedure
 		.input(
@@ -203,7 +136,7 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const element = await ctx.prisma.element.update({
+			await ctx.prisma.element.update({
 				where: {
 					id: input.elementId,
 				},
@@ -212,24 +145,6 @@ export const editorRouter = router({
 					icon: input.icon,
 				},
 			})
-			const section = await ctx.prisma.section.findUnique({
-				where: {
-					id: element.sectionId,
-				},
-				select: {
-					resumeId: true,
-				},
-			})
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					id: section?.resumeId,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	removeElement: protectedProcedure
 		.input(
@@ -238,29 +153,11 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const element = await ctx.prisma.element.delete({
+			await ctx.prisma.element.delete({
 				where: {
 					id: input.elementId,
 				},
 			})
-			const section = await ctx.prisma.section.findUnique({
-				where: {
-					id: element.sectionId,
-				},
-				select: {
-					resumeId: true,
-				},
-			})
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					id: section?.resumeId,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	reorderElement: protectedProcedure
 		.input(
@@ -272,35 +169,15 @@ export const editorRouter = router({
 			)
 		)
 		.mutation(async ({ ctx, input }) => {
-			let sectionId = ''
 			for (let i = 0; i < input.length; i++) {
 				const s = input[i]
 				if (s) {
-					const element = await ctx.prisma.element.update({
+					await ctx.prisma.element.update({
 						where: { id: s.elementId },
 						data: { order: s.newOrder },
 					})
-					sectionId = element.sectionId
 				}
 			}
-			const section = await ctx.prisma.section.findUnique({
-				where: {
-					id: sectionId,
-				},
-				select: {
-					resumeId: true,
-				},
-			})
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					id: section?.resumeId,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateResumeStyle: protectedProcedure
 		.input(
@@ -317,7 +194,7 @@ export const editorRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const resumeStyle = await ctx.prisma.resumeStyle.update({
+			await ctx.prisma.resumeStyle.update({
 				where: {
 					id: input.id,
 				},
@@ -332,16 +209,6 @@ export const editorRouter = router({
 					iconColor: input.iconColor,
 				},
 			})
-			const resume = await ctx.prisma.resume.findUnique({
-				where: {
-					resumeStyleId: resumeStyle.id,
-				},
-				select: {
-					urlSlug: true,
-				},
-			})
-			if (resume !== null && resume.urlSlug !== null)
-				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateResumeSlug: protectedProcedure
 		.input(
@@ -378,5 +245,31 @@ export const editorRouter = router({
 				},
 			})
 			await ctx.res.revalidate(`/view/${input.slug}`)
+		}),
+	revalidateCache: protectedProcedure
+		.input(
+			z.object({
+				resumeId: z.string(),
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: input.resumeId,
+				},
+				select: {
+					userId: true,
+					urlSlug: true,
+				},
+			})
+
+			if (resume && ctx.session.user.id !== resume.userId) {
+				throw new TRPCError({
+					code: 'UNAUTHORIZED',
+				})
+			}
+
+			if (resume && resume.urlSlug !== null)
+				await ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 })

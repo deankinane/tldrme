@@ -8,11 +8,13 @@ import {
 	signOut,
 	useSession,
 } from 'next-auth/react'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { BuiltInProviderType } from 'next-auth/providers'
 import { Button } from '@/modules/common/button/button'
 import { UserWidget } from '@/modules/common/user-widget/user-widget'
 import { LinkButton } from '@/modules/common/link-button/link-button'
+import { AnimatePresence, motion as m } from 'framer-motion'
+import Spinner from '@/modules/common/components/spinner'
 interface Props {
 	providers: Record<
 		LiteralUnion<BuiltInProviderType, string>,
@@ -21,7 +23,7 @@ interface Props {
 }
 const Home: NextPage<Props> = ({ providers }) => {
 	const { data: session, status } = useSession()
-
+	const [loading, setLoading] = useState(false)
 	const onLoginClick = useCallback(() => {
 		signIn()
 	}, [])
@@ -46,7 +48,11 @@ const Home: NextPage<Props> = ({ providers }) => {
 						You, succinctly.
 					</h2>
 					{status === 'authenticated' ? (
-						<LinkButton className="mt-32" href="/editor">
+						<LinkButton
+							className="mt-32"
+							href="/editor"
+							onClick={() => setLoading(true)}
+						>
 							Edit Your Resume
 						</LinkButton>
 					) : (
@@ -63,6 +69,21 @@ const Home: NextPage<Props> = ({ providers }) => {
 					{/* ))} */}
 				</div>
 			</main>
+			<AnimatePresence>
+				{loading ? (
+					<m.div
+						key="loading-screen"
+						className="fixed top-0 left-0 flex h-full w-full items-center justify-center bg-black"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+					>
+						<Spinner className="h-8 w-8 text-white" />
+					</m.div>
+				) : (
+					<></>
+				)}
+			</AnimatePresence>
 		</>
 	)
 }

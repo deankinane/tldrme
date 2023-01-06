@@ -162,7 +162,7 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 				onBlur={onSectionBlur}
 			/>
 			<div>
-				<AnimatePresence>
+				<AnimatePresence initial={false}>
 					{model.elements
 						.sort((a, b) => a.order - b.order)
 						.map((e, i) => {

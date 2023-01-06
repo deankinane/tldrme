@@ -46,9 +46,25 @@ export const withDropTarget = <P extends object>(
 		return (
 			<m.div
 				layout
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				exit={{ opacity: 0 }}
+				initial={{ height: 0, opacity: 0 }}
+				animate={{
+					opacity: 1,
+					height: 'auto',
+					transition: {
+						ease: 'easeIn',
+						height: { duration: 0.5 },
+						opacity: { delay: 0.5, duration: 0.25 },
+					},
+				}}
+				exit={{
+					opacity: 0,
+					height: 0,
+					transition: {
+						ease: 'easeOut',
+						height: { delay: 0.25, duration: 0.5 },
+						opacity: { duration: 0.25 },
+					},
+				}}
 				onDragEnter={onDragEnter}
 				onDragLeave={onDragLeave}
 				onDrop={onDrop}

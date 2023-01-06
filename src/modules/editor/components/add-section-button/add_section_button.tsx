@@ -14,7 +14,9 @@ export default function AddSectionButton({
 }: Props) {
 	return (
 		<m.button
+			key="addsectionbutton"
 			layout
+			transition={{ ease: 'easeIn', duration: 0.5 }}
 			className="mb-8 flex w-full items-center justify-center rounded-md border border-dashed border-indigo-500 bg-indigo-200 p-8 font-bold text-indigo-900 transition-all hover:bg-indigo-300"
 			onClick={onAddSectionClicked}
 			data-testid="add-section-button"

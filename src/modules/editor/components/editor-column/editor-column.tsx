@@ -6,15 +6,16 @@ import { trpc } from '@/utils/trpc'
 import { ResumeContext } from '../../utils/resumeContext'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 import reorderSections from '../../utils/reorder-sections'
-import { AnimatePresence, LayoutGroup, motion as m } from 'framer-motion'
+import { AnimatePresence, LayoutGroup } from 'framer-motion'
 
 interface Props {
 	columnIndex: number
+	initialSections: SectionModel[]
 }
 
-export default function EditorColumn({ columnIndex }: Props) {
+export default function EditorColumn({ columnIndex, initialSections }: Props) {
 	const { resume, updateResume } = useContext(ResumeContext)
-	const [sections, setSections] = useState<SectionModel[]>([])
+	const [sections, setSections] = useState<SectionModel[]>(initialSections)
 	const { dragData } = useContext(DraggableContext)
 
 	useEffect(() => {
@@ -108,7 +109,7 @@ export default function EditorColumn({ columnIndex }: Props) {
 	return (
 		<div>
 			<LayoutGroup>
-				<AnimatePresence>
+				<AnimatePresence initial={false}>
 					{sections
 						.sort((a, b) => a.order - b.order)
 						.map((s, i) => (
@@ -122,6 +123,7 @@ export default function EditorColumn({ columnIndex }: Props) {
 							></Section>
 						))}
 					<AddSectionButton
+						key="add-section-button"
 						onAddSectionClicked={onAddSectionClicked}
 						isLoading={mAddSection.isLoading}
 					/>
