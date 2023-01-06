@@ -1,7 +1,6 @@
 import { ElementType } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
-import { prisma } from '../../db/client'
 import { router, protectedProcedure } from '../trpc'
 
 export const editorRouter = router({
@@ -13,8 +12,8 @@ export const editorRouter = router({
 				subTitle: z.string(),
 			})
 		)
-		.mutation(async ({ input }) => {
-			await prisma?.resume.update({
+		.mutation(async ({ ctx, input }) => {
+			const resume = await ctx.prisma.resume.update({
 				where: {
 					id: input.resumeId,
 				},
@@ -23,6 +22,8 @@ export const editorRouter = router({
 					headerSubtitle: input.subTitle,
 				},
 			})
+			if (resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateProfilePicture: protectedProcedure
 		.input(
@@ -31,8 +32,8 @@ export const editorRouter = router({
 				base64: z.string(),
 			})
 		)
-		.mutation(async ({ input }) => {
-			await prisma?.resume.update({
+		.mutation(async ({ ctx, input }) => {
+			const resume = await ctx.prisma.resume.update({
 				where: {
 					id: input.resumeId,
 				},
@@ -40,6 +41,8 @@ export const editorRouter = router({
 					profilePicUrl: input.base64,
 				},
 			})
+			if (resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	addSection: protectedProcedure
 		.input(
@@ -49,8 +52,8 @@ export const editorRouter = router({
 				order: z.number(),
 			})
 		)
-		.mutation(async ({ input }) => {
-			const newSection = await prisma?.section.create({
+		.mutation(async ({ ctx, input }) => {
+			const newSection = await ctx.prisma.section.create({
 				data: {
 					columnIndex: input.columnIndex,
 					resumeId: input.resumeId,
@@ -58,7 +61,16 @@ export const editorRouter = router({
 					title: 'New Section',
 				},
 			})
-
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: input.resumeId,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 			return newSection
 		}),
 	updateSectionTitle: protectedProcedure
@@ -68,8 +80,8 @@ export const editorRouter = router({
 				title: z.string(),
 			})
 		)
-		.mutation(async ({ input }) => {
-			await prisma?.section.update({
+		.mutation(async ({ ctx, input }) => {
+			const section = await ctx.prisma.section.update({
 				where: {
 					id: input.sectionId,
 				},
@@ -77,6 +89,16 @@ export const editorRouter = router({
 					title: input.title,
 				},
 			})
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: section.resumeId,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	reorderSection: protectedProcedure
 		.input(
@@ -87,16 +109,28 @@ export const editorRouter = router({
 				})
 			)
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
+			let resumeId = ''
 			for (let i = 0; i < input.length; i++) {
 				const s = input[i]
 				if (s) {
-					await prisma?.section.update({
+					const section = await ctx.prisma.section.update({
 						where: { id: s.sectionId },
 						data: { order: s.newOrder },
 					})
+					resumeId = section.resumeId
 				}
 			}
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: resumeId,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	removeSection: protectedProcedure
 		.input(
@@ -104,12 +138,22 @@ export const editorRouter = router({
 				sectionId: z.string(),
 			})
 		)
-		.mutation(async ({ input }) => {
-			await prisma?.section.delete({
+		.mutation(async ({ ctx, input }) => {
+			const section = await ctx.prisma.section.delete({
 				where: {
 					id: input.sectionId,
 				},
 			})
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: section.resumeId,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	addElement: protectedProcedure
 		.input(
@@ -119,8 +163,8 @@ export const editorRouter = router({
 				type: z.nativeEnum(ElementType),
 			})
 		)
-		.mutation(async ({ input }) => {
-			return await prisma?.element.create({
+		.mutation(async ({ ctx, input }) => {
+			const element = await ctx.prisma.element.create({
 				data: {
 					sectionId: input.sectionId,
 					order: input.order,
@@ -129,6 +173,26 @@ export const editorRouter = router({
 					icon: input.type === 'IconText' ? 'FolderIcon' : '',
 				},
 			})
+			const section = await ctx.prisma.section.findUnique({
+				where: {
+					id: element.sectionId,
+				},
+				select: {
+					resumeId: true,
+				},
+			})
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: section?.resumeId,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
+
+			return element
 		}),
 	updateElement: protectedProcedure
 		.input(
@@ -138,8 +202,8 @@ export const editorRouter = router({
 				icon: z.optional(z.string()),
 			})
 		)
-		.mutation(async ({ input }) => {
-			await prisma?.element.update({
+		.mutation(async ({ ctx, input }) => {
+			const element = await ctx.prisma.element.update({
 				where: {
 					id: input.elementId,
 				},
@@ -148,6 +212,24 @@ export const editorRouter = router({
 					icon: input.icon,
 				},
 			})
+			const section = await ctx.prisma.section.findUnique({
+				where: {
+					id: element.sectionId,
+				},
+				select: {
+					resumeId: true,
+				},
+			})
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: section?.resumeId,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	removeElement: protectedProcedure
 		.input(
@@ -155,12 +237,30 @@ export const editorRouter = router({
 				elementId: z.string(),
 			})
 		)
-		.mutation(async ({ input }) => {
-			await prisma?.element.delete({
+		.mutation(async ({ ctx, input }) => {
+			const element = await ctx.prisma.element.delete({
 				where: {
 					id: input.elementId,
 				},
 			})
+			const section = await ctx.prisma.section.findUnique({
+				where: {
+					id: element.sectionId,
+				},
+				select: {
+					resumeId: true,
+				},
+			})
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: section?.resumeId,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	reorderElement: protectedProcedure
 		.input(
@@ -171,16 +271,36 @@ export const editorRouter = router({
 				})
 			)
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
+			let sectionId = ''
 			for (let i = 0; i < input.length; i++) {
 				const s = input[i]
 				if (s) {
-					await prisma?.element.update({
+					const element = await ctx.prisma.element.update({
 						where: { id: s.elementId },
 						data: { order: s.newOrder },
 					})
+					sectionId = element.sectionId
 				}
 			}
+			const section = await ctx.prisma.section.findUnique({
+				where: {
+					id: sectionId,
+				},
+				select: {
+					resumeId: true,
+				},
+			})
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					id: section?.resumeId,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateResumeStyle: protectedProcedure
 		.input(
@@ -195,8 +315,8 @@ export const editorRouter = router({
 				iconColor: z.number(),
 			})
 		)
-		.mutation(async ({ input }) => {
-			await prisma.resumeStyle.update({
+		.mutation(async ({ ctx, input }) => {
+			const resumeStyle = await ctx.prisma.resumeStyle.update({
 				where: {
 					id: input.id,
 				},
@@ -210,6 +330,16 @@ export const editorRouter = router({
 					iconColor: input.iconColor,
 				},
 			})
+			const resume = await ctx.prisma.resume.findUnique({
+				where: {
+					resumeStyleId: resumeStyle.id,
+				},
+				select: {
+					urlSlug: true,
+				},
+			})
+			if (resume !== null && resume.urlSlug !== null)
+				ctx.res.revalidate(`/view/${resume.urlSlug}`)
 		}),
 	updateResumeSlug: protectedProcedure
 		.input(
@@ -222,8 +352,8 @@ export const editorRouter = router({
 					.regex(/[a-zA-Z0-9\-]{4,20}/),
 			})
 		)
-		.mutation(async ({ input }) => {
-			const check = await prisma.resume.findFirst({
+		.mutation(async ({ ctx, input }) => {
+			const check = await ctx.prisma.resume.findFirst({
 				where: {
 					urlSlug: input.slug,
 				},
@@ -237,7 +367,7 @@ export const editorRouter = router({
 				})
 			}
 
-			await prisma.resume.update({
+			await ctx.prisma.resume.update({
 				where: {
 					id: input.id,
 				},
@@ -245,5 +375,6 @@ export const editorRouter = router({
 					urlSlug: input.slug,
 				},
 			})
+			ctx.res.revalidate(`/view/${input.slug}`)
 		}),
 })
