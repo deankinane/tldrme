@@ -32,6 +32,7 @@ export const Sidebar = ({ showSideMenu, closeSideMenu }: Props) => {
 			headerSubtitleColor: styles.headerSubtitleColor,
 			sectionTitleColor: styles.sectionTitleColor,
 			sectionSubtitleColor: styles.sectionSubtitleColor,
+			infoTextColor: styles.infoTextColor,
 			elementTextColor: styles.elementTextColor,
 			bulletColor: styles.bulletColor,
 			iconColor: styles.iconColor,
