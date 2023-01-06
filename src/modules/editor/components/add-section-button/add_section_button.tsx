@@ -1,6 +1,7 @@
 import Spinner from '@/modules/common/components/spinner'
 import { PlusCircleIcon } from '@heroicons/react/24/solid'
 import React from 'react'
+import { motion as m } from 'framer-motion'
 
 interface Props {
 	onAddSectionClicked: () => void
@@ -12,7 +13,8 @@ export default function AddSectionButton({
 	isLoading,
 }: Props) {
 	return (
-		<button
+		<m.button
+			layout
 			className="mb-8 flex w-full items-center justify-center rounded-md border border-dashed border-indigo-500 bg-indigo-200 p-8 font-bold text-indigo-900 transition-all hover:bg-indigo-300"
 			onClick={onAddSectionClicked}
 			data-testid="add-section-button"
@@ -27,6 +29,6 @@ export default function AddSectionButton({
 					Add Section
 				</>
 			)}
-		</button>
+		</m.button>
 	)
 }

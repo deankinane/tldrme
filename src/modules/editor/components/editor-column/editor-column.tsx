@@ -4,9 +4,10 @@ import Section from '@/modules/editor/components/section/section'
 import { type SectionModel } from '@/utils/common/types'
 import { trpc } from '@/utils/trpc'
 import { ResumeContext } from '../../utils/resumeContext'
-import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
 import reorderSections from '../../utils/reorder-sections'
+import { AnimatePresence, LayoutGroup, motion as m } from 'framer-motion'
+
 interface Props {
 	columnIndex: number
 }
@@ -14,7 +15,6 @@ interface Props {
 export default function EditorColumn({ columnIndex }: Props) {
 	const { resume, updateResume } = useContext(ResumeContext)
 	const [sections, setSections] = useState<SectionModel[]>([])
-	const [animateRef] = useAutoAnimate<HTMLDivElement>()
 	const { dragData } = useContext(DraggableContext)
 
 	useEffect(() => {
@@ -106,24 +106,27 @@ export default function EditorColumn({ columnIndex }: Props) {
 	)
 
 	return (
-		<div ref={animateRef}>
-			{sections
-				.sort((a, b) => a.order - b.order)
-				.map((s, i) => (
-					<Section
-						key={s.id}
-						index={i}
-						model={s}
-						onModelUpdated={onUpdateSection}
-						isValidSource={validSource}
-						onItemDropped={onSectionDropped}
-					></Section>
-				))}
-
-			<AddSectionButton
-				onAddSectionClicked={onAddSectionClicked}
-				isLoading={mAddSection.isLoading}
-			/>
+		<div>
+			<LayoutGroup>
+				<AnimatePresence>
+					{sections
+						.sort((a, b) => a.order - b.order)
+						.map((s, i) => (
+							<Section
+								key={s.id}
+								index={i}
+								model={s}
+								onModelUpdated={onUpdateSection}
+								isValidSource={validSource}
+								onItemDropped={onSectionDropped}
+							></Section>
+						))}
+					<AddSectionButton
+						onAddSectionClicked={onAddSectionClicked}
+						isLoading={mAddSection.isLoading}
+					/>
+				</AnimatePresence>
+			</LayoutGroup>
 		</div>
 	)
 }

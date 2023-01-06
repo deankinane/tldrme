@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import { motion as m } from 'framer-motion'
 
 interface WithDropTargetProps {
 	isValidSource: (index: number) => boolean
@@ -43,7 +44,11 @@ export const withDropTarget = <P extends object>(
 		}, [index, isValidSource])
 
 		return (
-			<div
+			<m.div
+				layout
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				exit={{ opacity: 0 }}
 				onDragEnter={onDragEnter}
 				onDragLeave={onDragLeave}
 				onDrop={onDrop}
@@ -63,6 +68,6 @@ export const withDropTarget = <P extends object>(
 						dragHover > 0 ? 'my-2 h-12' : ''
 					}`}
 				></div>
-			</div>
+			</m.div>
 		)
 	}

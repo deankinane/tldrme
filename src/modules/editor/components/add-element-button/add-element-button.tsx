@@ -2,8 +2,8 @@ import React, { useCallback, useRef, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import ElementTypeButton from './element-type-button'
 import { ElementType } from '@prisma/client'
-import { useAutoAnimate } from '@formkit/auto-animate/react'
 import Spinner from '@/modules/common/components/spinner'
+import { motion as m, AnimatePresence } from 'framer-motion'
 
 const buttonList = [
 	{
@@ -38,7 +38,6 @@ export default function AddElementButton({
 	isLoading,
 }: Props) {
 	const [menuOpen, setMenuOpen] = useState(false)
-	const [animateRef] = useAutoAnimate<HTMLDivElement>()
 	const buttonRef = useRef<HTMLButtonElement>(null)
 
 	const onToggleClick = useCallback(() => {
@@ -61,7 +60,7 @@ export default function AddElementButton({
 	}, [])
 
 	return (
-		<div className="ml-2 mt-4 mb-4 flex">
+		<m.div className="relative ml-2 mt-4 mb-4 flex" layout>
 			<button
 				className="mr-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-800 p-2 font-bold text-white transition-all hover:bg-indigo-600 focus:rotate-45"
 				onClick={onToggleClick}
@@ -71,21 +70,24 @@ export default function AddElementButton({
 			>
 				{isLoading ? <Spinner /> : <PlusIcon />}
 			</button>
-			<div ref={animateRef} className="grow">
-				{menuOpen ? (
-					buttonList.map((b) => (
-						<ElementTypeButton
-							key={b.text}
-							onClick={() => onAddButtonClick(b.type)}
-							data-testid={`add-element-button-${b.type}`}
-						>
-							{b.text}
-						</ElementTypeButton>
-					))
-				) : (
-					<></>
-				)}
+			<div className="absolute ml-12 grow overflow-hidden">
+				<AnimatePresence>
+					{menuOpen ? (
+						buttonList.map((b, i) => (
+							<ElementTypeButton
+								key={b.text}
+								onClick={() => onAddButtonClick(b.type)}
+								data-testid={`add-element-button-${b.type}`}
+								idx={i}
+							>
+								{b.text}
+							</ElementTypeButton>
+						))
+					) : (
+						<></>
+					)}
+				</AnimatePresence>
 			</div>
-		</div>
+		</m.div>
 	)
 }

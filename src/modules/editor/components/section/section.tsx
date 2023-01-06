@@ -7,11 +7,11 @@ import { trpc } from '@/utils/trpc'
 import type { Element, ElementType } from '@prisma/client'
 import BaseElement from '../elements/base-element'
 import { DraggableContext, DraggableType } from '../../utils/draggableContext'
-import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { ResumeContext } from '../../utils/resumeContext'
 import reorderSections from '../../utils/reorder-sections'
 import { withDropTarget } from '@/modules/common/components/withDropTarget'
 import { isMobile } from 'react-device-detect'
+import { AnimatePresence, motion as m } from 'framer-motion'
 
 interface Props {
 	index: number
@@ -23,7 +23,6 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 	const [dragged, setDragged] = useState(false)
 	const [model] = useState(pModel)
 	const { dragData, setDragData, endDrag } = useContext(DraggableContext)
-	const [animateRef] = useAutoAnimate<HTMLDivElement>()
 	const { resume, updateResume } = useContext(ResumeContext)
 
 	const mUpdateSectionTitle = trpc.editor.updateSectionTitle.useMutation()
@@ -162,26 +161,28 @@ function Section({ index, model: pModel, onModelUpdated }: Props) {
 				onClick={onSelectSection}
 				onBlur={onSectionBlur}
 			/>
-			<div ref={animateRef}>
-				{model.elements
-					.sort((a, b) => a.order - b.order)
-					.map((e, i) => {
-						return (
-							<BaseElement
-								key={e.id}
-								index={i}
-								element={e}
-								styles={resume.resumeStyle}
-								onElementUpdated={onElementUpdated}
-								isValidSource={validElementDropSource}
-								onItemDropped={onElementDropped}
-							/>
-						)
-					})}
-				<AddElementButton
-					onAddElementClicked={onAddElementClicked}
-					isLoading={mAddElement.isLoading}
-				/>
+			<div>
+				<AnimatePresence>
+					{model.elements
+						.sort((a, b) => a.order - b.order)
+						.map((e, i) => {
+							return (
+								<BaseElement
+									key={e.id}
+									index={i}
+									element={e}
+									styles={resume.resumeStyle}
+									onElementUpdated={onElementUpdated}
+									isValidSource={validElementDropSource}
+									onItemDropped={onElementDropped}
+								/>
+							)
+						})}
+					<AddElementButton
+						onAddElementClicked={onAddElementClicked}
+						isLoading={mAddElement.isLoading}
+					/>
+				</AnimatePresence>
 			</div>
 		</div>
 	)
